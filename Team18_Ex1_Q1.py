@@ -7,7 +7,7 @@ Short Description:
 This script is the HW_1 in the course Computational Intelligence
 ---------------------------------------------------------------------------------
 """
-
+#Labraries in use
 import random
 import matplotlib.pyplot as plt
 
