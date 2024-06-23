@@ -8,7 +8,8 @@ This script is the HW_1 in the course Computational Intelligence
 The script is an implementation of a genetic algorithm to solve the knapsack problem.
 The knapsack problem is a combinatorial optimization problem that seeks to maximize the profit of items in a knapsack without exceeding the weight limit.
 The script uses a genetic algorithm to find the best combination of items that maximizes the profit while keeping the total weight below the weight limit.
-The script uses three different selection methods: roulette wheel, tournament, and ranking.
+The script uses three different selection methods: roulette wheel, tournament, and ranking and mutation.
+any generation we will choose only two parents to crossover and create two offspring.
 The script plots a convergence graph showing the maximum profit obtained in each generation.
 The script prints the best solution found by the genetic algorithm, the expected profit, total weight, and the included instruments.
 the script will run with stop condition of 1000 generations or 50 generations do not improve the best solution.
@@ -28,13 +29,24 @@ crossover_rate = 0.7
 weight_limit = 100
 
 # Instruments data: [profit, weight]
-instruments = [
-    [1212, 2.91], [1211, 8.19], [612, 5.55], [609, 15.6], [1073, 19.1],
-    [1300, 13.5], [895, 7.21], [1225, 7.84], [1833, 17.6], [728, 7.13],
-    [211, 6.83], [894, 11.1], [1311, 14.5], [597, 4.65], [858, 17.01],
-    [854, 7.281], [1352, 11.1], [597, 10.15], [1176, 15.6], [1205, 8.01],
-    [1178, 10.4], [874, 7.677], [1222, 1.25], [806, 17.2]
+
+
+# [profit, weight]
+instruments = [[1212, 2.91],[1211, 8.19],[612, 5.55],[609, 15.6],
+    [1137, 3.70],[1300, 13.5],[585, 14.9],[1225, 7.84],[1303, 17.6],
+    [728, 17.3],[211, 6.83],[336, 14.4],[894, 2.11],[1381, 7.25],
+    [597, 4.65],[858, 17.0],[854, 7.28],[1156, 5.01],[597, 16.1],
+    [1129, 16.7],[850, 3.10],[874, 6.77],[579, 10.7],[1222, 1.25],
+    [896, 17.2]
 ]
+
+
+W = 100
+
+# You can add your logic here to process the instruments and the total weight W
+print(f"Total instruments: {len(instruments)}")
+print(f"Total weight limit: {W}")
+
 
 W = 100
 # Initialize population
