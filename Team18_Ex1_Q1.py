@@ -5,9 +5,18 @@
 Short Description:
 
 This script is the HW_1 in the course Computational Intelligence
+The script is an implementation of a genetic algorithm to solve the knapsack problem.
+The knapsack problem is a combinatorial optimization problem that seeks to maximize the profit of items in a knapsack without exceeding the weight limit.
+The script uses a genetic algorithm to find the best combination of items that maximizes the profit while keeping the total weight below the weight limit.
+The script uses three different selection methods: roulette wheel, tournament, and ranking.
+The script plots a convergence graph showing the maximum profit obtained in each generation.
+The script prints the best solution found by the genetic algorithm, the expected profit, total weight, and the included instruments.
+the script will run with stop condition of 1000 generations or 50 generations do not improve the best solution.
+
 ---------------------------------------------------------------------------------
 """
 #Labraries in use
+
 import random
 import matplotlib.pyplot as plt
 
@@ -27,7 +36,7 @@ instruments = [
     [1178, 10.4], [874, 7.677], [1222, 1.25], [806, 17.2]
 ]
 
-
+W = 100
 # Initialize population
 def initialize_population(size, n_items):
     return [[random.randint(0, 1) for _ in range(n_items)] for _ in range(size)]
@@ -151,3 +160,6 @@ genetic_algorithm('tournament')
 
 print("Running GA with Ranking Selection")
 genetic_algorithm('ranking')
+
+
+
