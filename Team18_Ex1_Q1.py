@@ -24,8 +24,8 @@ import matplotlib.pyplot as plt
 # Parameters
 population_size = 50
 generations = 1000
-mutation_rate = 0.01
-crossover_rate = 0.7
+mutation_rate = 0.002
+crossover_rate = 0.75
 weight_limit = 100
 
 # Instruments data: [profit, weight]
@@ -123,7 +123,12 @@ def genetic_algorithm(selection_method):
     for generation in range(generations):
         fitnesses = [calculate_fitness(individual) for individual in population]
         max_profits.append(max(fitnesses))
+        if generation > 50 and max_profits[-1] == max_profits[-50] and max_profits[-1] == max(max_profits):
+            for i in range(generation, generations-1):
+                max_profits.append(max_profits[-1])
+            break
         new_population = []
+
         for _ in range(population_size // 2):
             if selection_method == 'roulette':
                 parent1 = selection(population, fitnesses)
@@ -136,7 +141,15 @@ def genetic_algorithm(selection_method):
                 parent2 = ranking_selection(population, fitnesses)
             offspring1, offspring2 = crossover(parent1, parent2)
             new_population.extend([mutate(offspring1), mutate(offspring2)])
+
         population = new_population
+
+        plt.clf()
+        plt.xlabel('Generation')
+        plt.ylabel('Max Profit')
+        plt.title('Convergence Graph')
+        plt.plot(range(generation + 1), max_profits, label='Max Profit')
+        plt.pause(0.1)
 
     best_individual = max(population, key=calculate_fitness)
     best_fitness = calculate_fitness(best_individual)
@@ -155,12 +168,14 @@ def genetic_algorithm(selection_method):
     smoothed_profits = moving_average(max_profits, window_size)
     plt.plot(range(window_size - 1, generations), smoothed_profits, label='Smoothed Max Profit', color='red')
 
+
     plt.xlabel('Generation')
     plt.ylabel('Max Profit')
     plt.title('Convergence Graph')
     plt.grid(True)
     plt.legend()
     plt.show()
+
 
 
 # Run the genetic algorithm with different selection methods
