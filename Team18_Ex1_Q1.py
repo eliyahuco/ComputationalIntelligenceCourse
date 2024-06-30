@@ -199,16 +199,16 @@ def genetic_algorithm(selection_method):
 
 
 
-# Run the genetic algorithm with different selection methods
-# print("Running GA with Roulette Wheel Selection\n")
-# genetic_algorithm('roulette')
-#
-#
-# print("\nRunning GA with Tournament Selection\n")
-# genetic_algorithm('tournament')
-#
-# print("\nRunning GA with Ranking Selection\n")
-# genetic_algorithm('ranking')
+Run the genetic algorithm with different selection methods
+print("Running GA with Roulette Wheel Selection\n")
+genetic_algorithm('roulette')
+
+
+print("\nRunning GA with Tournament Selection\n")
+genetic_algorithm('tournament')
+
+print("\nRunning GA with Ranking Selection\n")
+genetic_algorithm('ranking')
 
 print("\nRunning GA with Random Selection\n")
 genetic_algorithm('mixed')
