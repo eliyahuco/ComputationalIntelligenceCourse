@@ -20,6 +20,7 @@ the script will run with stop condition of 1000 generations or 50 generations do
 
 import random
 import matplotlib.pyplot as plt
+import numpy as np
 
 # Parameters
 population_size = 50
@@ -119,15 +120,16 @@ def moving_average(data, window_size):
 def genetic_algorithm(selection_method):
     population = initialize_population(population_size, len(instruments))
     max_profits = []
-    mutation_rate = 1
-    crossover_rate = 0.001
+    mutation_rate = random.random()
+    crossover_rate = random.random()
+    total_weight_list = []
     for generation in range(generations):
-        rand = random.random()
-        if generation % 100 == 0 and generation > 0:
-            print("Generation", generation, "Max profit:", max(max_profits) if max_profits else 0,"total weight:", sum(max(population, key=calculate_fitness)[i] * instruments[i][1] for i in range(len(instruments))))
 
-            mutation_rate = mutation_rate * 0.9
-            crossover_rate = crossover_rate * 1.1
+
+
+
+        mutation_rate = mutation_rate * 0.9
+        crossover_rate = crossover_rate * 1.1
         fitnesses = [calculate_fitness(individual) for individual in population]
         max_profits.append(max(fitnesses))
         if generation > 50 and max_profits[-1] == max_profits[-50] and max_profits[-1] >= max(max_profits):
@@ -135,9 +137,16 @@ def genetic_algorithm(selection_method):
                 max_profits.append(max_profits[-1])
             break
         new_population = []
+        total_weight_list.append(sum(max(population, key=calculate_fitness)[i] * instruments[i][1] for i in range(len(instruments))))
+        if generation % 100 == 0 and generation > 0:
+
+            print("Generation", generation, "profit:", max_profits[-1] if max_profits else 0,"total weight:", sum(max(population, key=calculate_fitness)[i] * instruments[i][1] for i in range(len(instruments))))
+            print("Mutation rate:", mutation_rate, "Crossover rate:", crossover_rate)
+            print("Best solution so far:", max(max_profits) if max_profits else 0, 'best_weight' , total_weight_list[max_profits.index(max(max_profits ))] if total_weight_list else 0)
+            print('')
 
         for _ in range(population_size // 2):
-
+            rand = np.random.random()
             if selection_method == 'roulette':
                 parent1 = selection(population, fitnesses)
                 parent2 = selection(population, fitnesses)
@@ -150,20 +159,24 @@ def genetic_algorithm(selection_method):
                 parent2 = ranking_selection(population, fitnesses)
             elif selection_method == 'mixed_random':
 
+
                 if rand < 0.33:
                     parent1 = selection(population, fitnesses)
                     parent2 = selection(population, fitnesses)
-                elif rand < 0.66:
+                    print('selection')
+                elif rand < 0.66 and rand >= 0.33:
                     parent1 = tournament_selection(population, fitnesses)
                     parent2 = tournament_selection(population, fitnesses)
+                    print('tournament')
                 else:
                     parent1 = ranking_selection(population, fitnesses)
                     parent2 = ranking_selection(population, fitnesses)
+                    print('ranking')
             elif selection_method == 'progress_selection':
-                if generation < 0.33 * generations:
+                if generations%3 == 0:
                     parent1 = selection(population, fitnesses)
                     parent2 = selection(population, fitnesses)
-                elif generation < 0.66 * generations:
+                elif generations%3 == 1:
                     parent1 = tournament_selection(population, fitnesses)
                     parent2 = tournament_selection(population, fitnesses)
                 else:
@@ -172,7 +185,10 @@ def genetic_algorithm(selection_method):
 
             offspring1, offspring2 = crossover(parent1, parent2)
             new_population.extend([mutate(offspring1), mutate(offspring2)])
-
+        if mutation_rate < 0.1:
+            mutation_rate = 0.9
+        if crossover_rate > 0.9:
+            crossover_rate = 0.1
         population = new_population
 
         plt.clf()
@@ -221,7 +237,7 @@ print("\nRunning GA with Ranking Selection\n")
 genetic_algorithm('ranking')
 
 print("\nRunning GA with Random Selection\n")
-genetic_algorithm('mixed_random ')
+genetic_algorithm('mixed_random')
 
 print("\nRunning GA with Progress Selection\n")
 genetic_algorithm('progress_selection')
