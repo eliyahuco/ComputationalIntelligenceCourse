@@ -120,19 +120,19 @@ def moving_average(data, window_size):
 def genetic_algorithm(selection_method):
     population = initialize_population(population_size, len(instruments))
     max_profits = []
-    mutation_rate = random.random()
-    crossover_rate = random.random()
+    mutation_rate = np.random.random()
+    crossover_rate = np.random.random()
     total_weight_list = []
     for generation in range(generations):
 
 
 
 
-        mutation_rate = mutation_rate * 0.9
+        mutation_rate = mutation_rate * 0.75
         crossover_rate = crossover_rate * 1.1
         fitnesses = [calculate_fitness(individual) for individual in population]
         max_profits.append(max(fitnesses))
-        if generation > 50 and max_profits[-1] == max_profits[-50] and max_profits[-1] >= max(max_profits):
+        if generation > 300 and max_profits[-1] == max_profits[-50] and  max_profits[-1] >= max(max_profits):
             for i in range(generation, generations-1):
                 max_profits.append(max_profits[-1])
             break
@@ -185,7 +185,7 @@ def genetic_algorithm(selection_method):
 
             offspring1, offspring2 = crossover(parent1, parent2)
             new_population.extend([mutate(offspring1), mutate(offspring2)])
-        if mutation_rate < 0.1:
+        if mutation_rate < 0.01:
             mutation_rate = 0.9
         if crossover_rate > 0.9:
             crossover_rate = 0.1
