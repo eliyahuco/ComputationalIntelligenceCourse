@@ -148,12 +148,22 @@ def genetic_algorithm(selection_method):
             elif selection_method == 'ranking':
                 parent1 = ranking_selection(population, fitnesses)
                 parent2 = ranking_selection(population, fitnesses)
-            elif selection_method == 'mixed':
+            elif selection_method == 'mixed_random':
 
                 if rand < 0.33:
                     parent1 = selection(population, fitnesses)
                     parent2 = selection(population, fitnesses)
                 elif rand < 0.66:
+                    parent1 = tournament_selection(population, fitnesses)
+                    parent2 = tournament_selection(population, fitnesses)
+                else:
+                    parent1 = ranking_selection(population, fitnesses)
+                    parent2 = ranking_selection(population, fitnesses)
+            elif selection_method == 'progress_selection':
+                if generation < 0.33 * generations:
+                    parent1 = selection(population, fitnesses)
+                    parent2 = selection(population, fitnesses)
+                elif generation < 0.66 * generations:
                     parent1 = tournament_selection(population, fitnesses)
                     parent2 = tournament_selection(population, fitnesses)
                 else:
@@ -199,7 +209,7 @@ def genetic_algorithm(selection_method):
 
 
 
-Run the genetic algorithm with different selection methods
+#Run the genetic algorithm with different selection methods
 print("Running GA with Roulette Wheel Selection\n")
 genetic_algorithm('roulette')
 
@@ -211,7 +221,10 @@ print("\nRunning GA with Ranking Selection\n")
 genetic_algorithm('ranking')
 
 print("\nRunning GA with Random Selection\n")
-genetic_algorithm('mixed')
+genetic_algorithm('mixed_random ')
+
+print("\nRunning GA with Progress Selection\n")
+genetic_algorithm('progress_selection')
 
 
 
