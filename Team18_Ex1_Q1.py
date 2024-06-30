@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 population_size = 50
 generations = 1000
 mutation_rate = 0.002
-crossover_rate = 0.75
+crossover_rate = 0.9999
 weight_limit = 100
 
 # Instruments data: [profit, weight]
@@ -119,26 +119,47 @@ def moving_average(data, window_size):
 def genetic_algorithm(selection_method):
     population = initialize_population(population_size, len(instruments))
     max_profits = []
-
+    mutation_rate = 1
+    crossover_rate = 0.001
     for generation in range(generations):
+        rand = random.random()
+        if generation % 100 == 0 and generation > 0:
+            print("Generation", generation, "Max profit:", max(max_profits) if max_profits else 0,"total weight:", sum(max(population, key=calculate_fitness)[i] * instruments[i][1] for i in range(len(instruments))))
+
+            mutation_rate = mutation_rate * 0.9
+            crossover_rate = crossover_rate * 1.1
         fitnesses = [calculate_fitness(individual) for individual in population]
         max_profits.append(max(fitnesses))
-        if generation > 50 and max_profits[-1] == max_profits[-50] and max_profits[-1] == max(max_profits):
+        if generation > 50 and max_profits[-1] == max_profits[-50] and max_profits[-1] >= max(max_profits):
             for i in range(generation, generations-1):
                 max_profits.append(max_profits[-1])
             break
         new_population = []
 
         for _ in range(population_size // 2):
+
             if selection_method == 'roulette':
                 parent1 = selection(population, fitnesses)
                 parent2 = selection(population, fitnesses)
+
             elif selection_method == 'tournament':
                 parent1 = tournament_selection(population, fitnesses)
                 parent2 = tournament_selection(population, fitnesses)
             elif selection_method == 'ranking':
                 parent1 = ranking_selection(population, fitnesses)
                 parent2 = ranking_selection(population, fitnesses)
+            elif selection_method == 'mixed':
+
+                if rand < 0.33:
+                    parent1 = selection(population, fitnesses)
+                    parent2 = selection(population, fitnesses)
+                elif rand < 0.66:
+                    parent1 = tournament_selection(population, fitnesses)
+                    parent2 = tournament_selection(population, fitnesses)
+                else:
+                    parent1 = ranking_selection(population, fitnesses)
+                    parent2 = ranking_selection(population, fitnesses)
+
             offspring1, offspring2 = crossover(parent1, parent2)
             new_population.extend([mutate(offspring1), mutate(offspring2)])
 
@@ -155,7 +176,7 @@ def genetic_algorithm(selection_method):
     best_fitness = calculate_fitness(best_individual)
     total_weight = sum(best_individual[i] * instruments[i][1] for i in range(len(best_individual)))
 
-    print("GA found best solution after", generations, "iterations:")
+    print("GA found best solution after", generation, "iterations:")
     print("Expected profit =", best_fitness)
     print("Total weight =", total_weight)
     print("Included instruments are", [i for i in range(len(best_individual)) if best_individual[i] == 1])
@@ -179,14 +200,18 @@ def genetic_algorithm(selection_method):
 
 
 # Run the genetic algorithm with different selection methods
-print("Running GA with Roulette Wheel Selection")
-genetic_algorithm('roulette')
+# print("Running GA with Roulette Wheel Selection\n")
+# genetic_algorithm('roulette')
+#
+#
+# print("\nRunning GA with Tournament Selection\n")
+# genetic_algorithm('tournament')
+#
+# print("\nRunning GA with Ranking Selection\n")
+# genetic_algorithm('ranking')
 
-print("Running GA with Tournament Selection")
-genetic_algorithm('tournament')
-
-print("Running GA with Ranking Selection")
-genetic_algorithm('ranking')
+print("\nRunning GA with Random Selection\n")
+genetic_algorithm('mixed')
 
 
 
