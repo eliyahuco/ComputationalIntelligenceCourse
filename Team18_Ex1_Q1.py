@@ -25,7 +25,7 @@ import numpy as np
 # Parameters
 population_size = 50
 generations = 1000
-mutation_rate = 0.002
+mutation_rate = 0.5
 crossover_rate = 0.9999
 weight_limit = 100
 
@@ -161,18 +161,22 @@ def crossover(parent1, parent2):
     return parent1, parent2
 
 
-# Mutation
-def mutate(individual):
+# Mutation using bit flip
+def mutate(individual, mutation_rate=0.5):
+    '''
+    This function mutates an individual by flipping a random bit with a given probability.
+    :param individual: a list of binary values representing the individual
+    :param mutation_rate: the probability of flipping a bit
+    :return: the mutated individual
+    '''
+
     if random.random() < mutation_rate:
         index = random.randint(0, len(individual) - 1)
         individual[index] = 1 - individual[index]
         return individual
     return individual
-    # for i in range(len(individual)):
-    #     if random.random() < mutation_rate:
-    #         individual[i] = 1 - individual[i]
-    # return individual
-print(mutate([1,0,1,0,1,0,1,0,1,0]))
+
+print(mutate([1,0,1,0,1,0,1,0,1,0],0.5))
 
 # Moving average for smoothing
 def moving_average(data, window_size):
