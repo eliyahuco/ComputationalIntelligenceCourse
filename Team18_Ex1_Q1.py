@@ -123,7 +123,16 @@ print(proportional_selection(pop, calculate_fitnesses_fo_all_population(pop)))
 
 
 # Tournament selection
-def tournament_selection(population, fitnesses, k=3):
+def tournament_selection(population, fitnesses, k=10):
+    '''
+    This function selects an individual from the population using tournament selection.
+    The function selects k individuals at random and returns the best individual.
+    :param population: a list of lists representing the population
+    :param fitnesses: a list of fitness values corresponding to the population
+    :param k: the number of individuals to select for the tournament
+    :return: the selected individual
+    '''
+
     selected = random.sample(list(zip(population, fitnesses)), k)
     selected.sort(key=lambda x: x[1], reverse=True)
     return selected[0][0]
@@ -147,16 +156,23 @@ def crossover(parent1, parent2):
     if random.random() < crossover_rate:
         point = random.randint(1, len(parent1) - 1)
         return parent1[:point] + parent2[point:], parent2[:point] + parent1[point:]
+
+
     return parent1, parent2
 
 
 # Mutation
 def mutate(individual):
-    for i in range(len(individual)):
-        if random.random() < mutation_rate:
-            individual[i] = 1 - individual[i]
+    if random.random() < mutation_rate:
+        index = random.randint(0, len(individual) - 1)
+        individual[index] = 1 - individual[index]
+        return individual
     return individual
-
+    # for i in range(len(individual)):
+    #     if random.random() < mutation_rate:
+    #         individual[i] = 1 - individual[i]
+    # return individual
+print(mutate([1,0,1,0,1,0,1,0,1,0]))
 
 # Moving average for smoothing
 def moving_average(data, window_size):
@@ -177,7 +193,7 @@ def genetic_algorithm(selection_method):
 
         mutation_rate = mutation_rate * 0.75
         crossover_rate = crossover_rate * 1.1
-        fitnesses = [calculate_fitness(individual) for individual in population]
+        fitnesses = calculate_fitnesses_fo_all_population(population)
         max_profits.append(max(fitnesses))
         if generation > 300 and max_profits[-1] == max_profits[-50] and  max_profits[-1] >= max(max_profits):
             for i in range(generation, generations-1):
@@ -276,8 +292,8 @@ def genetic_algorithm(selection_method):
 
 
 #Run the genetic algorithm with different selection methods
-print("Running GA with Roulette Wheel Selection\n")
-genetic_algorithm('roulette')
+# print("Running GA with Roulette Wheel Selection\n")
+# genetic_algorithm('roulette')
 #
 #
 # print("\nRunning GA with Tournament Selection\n")
@@ -292,8 +308,8 @@ genetic_algorithm('roulette')
 # print("\nRunning GA with Progress Selection\n")
 # genetic_algorithm('progress_selection')
 
-print("\nRunning GA with Random Selection\n")
-genetic_algorithm('random')
+# print("\nRunning GA with Random Selection\n")
+# genetic_algorithm('random')
 
 
 
