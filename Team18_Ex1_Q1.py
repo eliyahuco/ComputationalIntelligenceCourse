@@ -52,9 +52,16 @@ print(f"Total weight limit: {W}")
 W = 100
 # Initialize population
 def initialize_population(size, n_items):
+    '''
+    This function initializes the population with random binary values.
+    :param size: population size
+    :param n_items: number of items
+    :return: a list of lists with random binary values that represent the population
+    '''
     return [[random.randint(0, 1) for _ in range(n_items)] for _ in range(size)]
 
-
+pop = initialize_population(50,len(instruments))
+print(initialize_population(50,len(instruments)))
 # Calculate fitness
 def calculate_fitness(individual):
     total_weight = sum(individual[i] * instruments[i][1] for i in range(len(individual)))
@@ -63,6 +70,8 @@ def calculate_fitness(individual):
         return 0
     return total_profit
 
+for i in range(len(pop)):
+    print(calculate_fitness(pop[i]))
 
 # Selection using roulette wheel
 def selection(population, fitnesses):
@@ -226,21 +235,21 @@ def genetic_algorithm(selection_method):
 
 
 #Run the genetic algorithm with different selection methods
-print("Running GA with Roulette Wheel Selection\n")
-genetic_algorithm('roulette')
-
-
-print("\nRunning GA with Tournament Selection\n")
-genetic_algorithm('tournament')
-
-print("\nRunning GA with Ranking Selection\n")
-genetic_algorithm('ranking')
-
-print("\nRunning GA with Random Selection\n")
-genetic_algorithm('mixed_random')
-
-print("\nRunning GA with Progress Selection\n")
-genetic_algorithm('progress_selection')
+# print("Running GA with Roulette Wheel Selection\n")
+# genetic_algorithm('roulette')
+#
+#
+# print("\nRunning GA with Tournament Selection\n")
+# genetic_algorithm('tournament')
+#
+# print("\nRunning GA with Ranking Selection\n")
+# genetic_algorithm('ranking')
+#
+# print("\nRunning GA with Random Selection\n")
+# genetic_algorithm('mixed_random')
+#
+# print("\nRunning GA with Progress Selection\n")
+# genetic_algorithm('progress_selection')
 
 
 
