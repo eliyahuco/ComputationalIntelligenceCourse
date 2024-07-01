@@ -202,6 +202,7 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments, generat
     max_profits = []
     total_weight_list = []
     fitnesses = calculate_fitnesses_fo_all_population(population)
+
     for generation in range(generations):
         if selection_methods == 'random':
             parent1 = random_selection(population)
@@ -230,7 +231,9 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments, generat
             offspring1, offspring2 = crossover(parent1, parent2)
             offspring_population.extend([offspring1, offspring2])
             offspring_population.extend([mutate(offspring1), mutate(offspring2)])
-        elif selection_method == 'progress_selection':
+            population.remove(min(population, key=calculate_fitness))
+            population.remove(min(population, key=calculate_fitness))
+        elif selection_methods == 'progress_selection':
             if generations < 20:
                 perent1 = random_selection(population, fitnesses)
                 parent2 = random_selection(population, fitnesses)
@@ -245,7 +248,10 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments, generat
                 parent2 = max(population, key=calculate_fitness)
             offspring1, offspring2 = crossover(parent1, parent2)
             population.extend([offspring1, offspring2])
-            offspring_population.extend([mutate(offspring1), mutate(offspring2)])
+            population.extend([mutate(offspring1), mutate(offspring2)])
+            population.remove(min(population, key=calculate_fitness))
+            population.remove(min(population, key=calculate_fitness))
+
 
         if selection_methods == 'elite':
             population = offspring_population
@@ -298,15 +304,15 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments, generat
     plt.title(f'Convergence Graph {selection_methods}')
     plt.grid(True)
     plt.legend()
-    plt.show()
+    plt.pause(3)
     return best_individual, best_fitness, total_weight
 
-print(genetic_algorithm_maximize_the_profit('random',instruments, generations=1000, population_size=50, mutation_rate=0.75, crossover_rate=0.25))
-
-print(genetic_algorithm_maximize_the_profit('proportional',instruments, generations=1000, population_size=50, mutation_rate=0.9, crossover_rate=0.1))
-print(genetic_algorithm_maximize_the_profit('tournament',instruments, generations=1000, population_size=50, mutation_rate=0.9, crossover_rate=0.1))
-print(genetic_algorithm_maximize_the_profit('ranking',instruments, generations=1000, population_size=50, mutation_rate=0.9, crossover_rate=0.1))
-print(genetic_algorithm_maximize_the_profit('elite',instruments, generations=1000, population_size=50, mutation_rate=0.9, crossover_rate=0.1))
+# print(genetic_algorithm_maximize_the_profit('random',instruments, generations=1000, population_size=50, mutation_rate=0.75, crossover_rate=0.25))
+#
+# print(genetic_algorithm_maximize_the_profit('proportional',instruments, generations=1000, population_size=50, mutation_rate=0.9, crossover_rate=0.1))
+# print(genetic_algorithm_maximize_the_profit('tournament',instruments, generations=1000, population_size=50, mutation_rate=0.9, crossover_rate=0.1))
+# print(genetic_algorithm_maximize_the_profit('ranking',instruments, generations=1000, population_size=50, mutation_rate=0.9, crossover_rate=0.1))
+# print(genetic_algorithm_maximize_the_profit('elite',instruments, generations=1000, population_size=50, mutation_rate=0.9, crossover_rate=0.1))
 print(genetic_algorithm_maximize_the_profit('progress_selection',instruments, generations=1000, population_size=50, mutation_rate=0.9, crossover_rate=0.1))
 
 
