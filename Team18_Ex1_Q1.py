@@ -182,6 +182,53 @@ print(mutate([1,0,1,0,1,0,1,0,1,0],0.5))
 def moving_average(data, window_size):
     return [sum(data[i:i + window_size]) / window_size for i in range(len(data) - window_size + 1)]
 
+def genetic_algorithm_maximize_the_profit(selection_methods,instruments, generations=1000, population_size=50, mutation_rate=0.9, crossover_rate=0.1,)
+    population = initialize_population(population_size, len(instruments))
+    offspring_population = []
+    max_profits = []
+    total_weight_list = []
+    fitnesses = calculate_fitnesses_fo_all_population(population)
+    for generation in range(generations):
+        if selection_methods == 'random':
+            parent1 = random_selection(population)
+            parent2 = random_selection(population)
+            offspring1, offspring2 = crossover(parent1, parent2)
+            population.extend([mutate(offspring1), mutate(offspring2]
+        elif selection_methods == 'proportional':
+            parent1 = proportional_selection(population, fitnesses)
+            parent2 = proportional_selection(population, fitnesses)
+            offspring1, offspring2 = crossover(parent1, parent2)
+            population.extend([mutate(offspring1), mutate(offspring2]
+        elif selection_methods == 'tournament':
+            parent1 = tournament_selection(population, fitnesses)
+            parent2 = tournament_selection(population, fitnesses)
+            offspring1, offspring2 = crossover(parent1, parent2)
+            population.extend([mutate(offspring1), mutate(offspring2]
+        elif selection_methods == 'ranking':
+            parent1 = ranking_selection(population, fitnesses)
+            parent2 = ranking_selection(population, fitnesses)
+            offspring1, offspring2 = crossover(parent1, parent2)
+            population.extend([mutate(offspring1), mutate(offspring2]
+        elif selection_methods == 'elite':
+            parent1 = max(population, key=calculate_fitness)
+            parent2 = max(population, key=calculate_fitness)
+            offspring1, offspring2 = crossover(parent1, parent2)
+            population.extend([offspring1, offspring2]
+            offspring_population.extend([mutate(offspring1), mutate(offspring2])
+        mutation_rate = mutation_rate * 0.9
+        crossover_rate = crossover_rate * 1.1
+        fitnesses = calculate_fitnesses_fo_all_population(population)
+        max_profits.append(max(fitnesses))
+        total_weight_list.append(sum(max(population, key=calculate_fitness)[i] * instruments[i][1] for i in range(len(instruments)))
+        if generation % 100 == 0 and generation > 0:
+            print("Generation", generation, "profit:", max_profits[-1], "total weight:", sum(max(population, key=calculate_fitness)[i] * instruments[i][1] for i in range(len(instruments)))
+            print("Mutation rate:", mutation_rate, "Crossover rate:", crossover_rate)
+            print("Best solution so far:", max(max_profits), 'best_weight' , total_weight_list[max_profits.index(max(max_profits ))]
+
+
+
+
+
 
 # Genetic Algorithm
 def genetic_algorithm(selection_method):
@@ -191,6 +238,7 @@ def genetic_algorithm(selection_method):
     crossover_rate = np.random.random()
     total_weight_list = []
     for generation in range(generations):
+
 
 
 
@@ -293,6 +341,8 @@ def genetic_algorithm(selection_method):
     plt.legend()
     plt.show()
 
+def main():
+    pass
 
 
 #Run the genetic algorithm with different selection methods
@@ -316,4 +366,5 @@ def genetic_algorithm(selection_method):
 # genetic_algorithm('random')
 
 
-
+if __name__ == '__main__':
+    main()
