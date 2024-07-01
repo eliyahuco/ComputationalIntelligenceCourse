@@ -64,6 +64,13 @@ pop = initialize_population(50,len(instruments))
 print(initialize_population(50,len(instruments)))
 # Calculate fitness
 def calculate_fitness(individual):
+    '''
+    This function calculates the fitness of an individual by summing the profit of the selected items.
+    If the total weight exceeds the weight limit, the fitness is set to 0.
+    :param individual: a list of binary values representing the selected items
+    :return: the fitness value of the individual
+    '''
+
     total_weight = sum(individual[i] * instruments[i][1] for i in range(len(individual)))
     total_profit = sum(individual[i] * instruments[i][0] for i in range(len(individual)))
     if total_weight > weight_limit:
@@ -73,15 +80,46 @@ def calculate_fitness(individual):
 for i in range(len(pop)):
     print(calculate_fitness(pop[i]))
 
+# calculate fitness for all population
+def calculate_fitnesses_fo_all_population(population):
+    '''
+    This function calculates the fitness of all individuals in the population.
+    :param population: a list of lists representing the population
+    :return: a list of fitness values corresponding to the population
+    '''
+
+    fitnesses = []
+    for individual in population:
+        fitnesses.append(calculate_fitness(individual))
+    return fitnesses
+
 # Selection using roulette wheel
-def selection(population, fitnesses):
-    max_fitness = sum(fitnesses)
-    pick = random.uniform(0, max_fitness)
-    current = 0
-    for individual, fitness in zip(population, fitnesses):
-        current += fitness
-        if current > pick:
-            return individual
+
+def random_selection(population):
+    '''
+    This function selects an individual from the population using roulette wheel selection.
+    The probability of selecting an individual is proportional to its fitness value.
+    :param population: a list of lists representing the population
+    :return: the selected individual
+    '''
+    pick = random.uniform(0,len(population))
+    return population[int(pick)]
+def proportional_selection(population, fitnesses,pick=0.1):
+    '''
+    This function selects an individual from the population using roulette wheel selection.
+    The probability of selecting an individual is proportional to its fitness value.
+    :param population: a list of lists representing the population
+    :param fitnesses: a list of fitness values corresponding to the population
+    :return: the selected individual
+    '''
+    total_fitness = sum(fitnesses)
+    if total_fitness == 0:
+        return random.choice(population)
+    proportional_list = [fitness / total_fitness for fitness in fitnesses]
+    selected_individual = random.choices(population, weights=proportional_list, k=1)[0]
+
+    return selected_individual
+print(proportional_selection(pop, calculate_fitnesses_fo_all_population(pop)))
 
 
 # Tournament selection
@@ -157,8 +195,8 @@ def genetic_algorithm(selection_method):
         for _ in range(population_size // 2):
             rand = np.random.random()
             if selection_method == 'roulette':
-                parent1 = selection(population, fitnesses)
-                parent2 = selection(population, fitnesses)
+                parent1 = proportional_selection(population, fitnesses)
+                parent2 = proportional_selection(population, fitnesses)
 
             elif selection_method == 'tournament':
                 parent1 = tournament_selection(population, fitnesses)
@@ -166,6 +204,9 @@ def genetic_algorithm(selection_method):
             elif selection_method == 'ranking':
                 parent1 = ranking_selection(population, fitnesses)
                 parent2 = ranking_selection(population, fitnesses)
+            elif selection_method == 'random':
+                parent1 = random_selection(population)
+                parent2 = random_selection(population)
             elif selection_method == 'mixed_random':
 
 
@@ -235,8 +276,8 @@ def genetic_algorithm(selection_method):
 
 
 #Run the genetic algorithm with different selection methods
-# print("Running GA with Roulette Wheel Selection\n")
-# genetic_algorithm('roulette')
+print("Running GA with Roulette Wheel Selection\n")
+genetic_algorithm('roulette')
 #
 #
 # print("\nRunning GA with Tournament Selection\n")
@@ -250,6 +291,9 @@ def genetic_algorithm(selection_method):
 #
 # print("\nRunning GA with Progress Selection\n")
 # genetic_algorithm('progress_selection')
+
+print("\nRunning GA with Random Selection\n")
+genetic_algorithm('random')
 
 
 
