@@ -151,7 +151,7 @@ def ranking_selection(population, fitnesses):
 
 
 # Crossover
-def crossover(parent1, parent2):
+def crossover(parent1, parent2, crossover_rate=0.5):
     if random.random() < crossover_rate:
         point = random.randint(1, len(parent1) - 1)
         return parent1[:point] + parent2[point:], parent2[:point] + parent1[point:]
@@ -204,43 +204,62 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments, generat
     fitnesses = calculate_fitnesses_fo_all_population(population)
 
     for generation in range(generations):
+        if len(population) >  population_size*1.1:
+            for i in range(len(population) - int(population_size*0.50)):
+                population.remove(min(population, key=calculate_fitness))
+            fitnesses = calculate_fitnesses_fo_all_population(population)
+
         if selection_methods == 'random':
             parent1 = random_selection(population)
             parent2 = random_selection(population)
             offspring1, offspring2 = crossover(parent1, parent2)
+            population.extend([offspring1, offspring2])
             population.extend([mutate(offspring1), mutate(offspring2)])
+            mutation_rate = mutation_rate * 1.25
+            crossover_rate = crossover_rate * 0.75
 
         elif selection_methods == 'proportional':
             parent1 = proportional_selection(population, fitnesses)
             parent2 = proportional_selection(population, fitnesses)
             offspring1, offspring2 = crossover(parent1, parent2)
+            population.extend([offspring1, offspring2])
             population.extend([mutate(offspring1), mutate(offspring2)])
+            mutation_rate = mutation_rate * 0.9
+            crossover_rate = crossover_rate * 1.1
         elif selection_methods == 'tournament':
             parent1 = tournament_selection(population, fitnesses)
             parent2 = tournament_selection(population, fitnesses)
             offspring1, offspring2 = crossover(parent1, parent2)
+            population.extend([offspring1, offspring2])
             population.extend([mutate(offspring1), mutate(offspring2)])
+            mutation_rate = mutation_rate * 1.1
+            crossover_rate = crossover_rate * 0.9
         elif selection_methods == 'ranking':
             parent1 = ranking_selection(population, fitnesses)
             parent2 = ranking_selection(population, fitnesses)
             offspring1, offspring2 = crossover(parent1, parent2)
+            population.extend([offspring1, offspring2])
             population.extend([mutate(offspring1), mutate(offspring2)])
+            mutation_rate = mutation_rate * 0.9
+            crossover_rate = crossover_rate * 1.1
         elif selection_methods == 'elite':
             parent1 = max(population, key=calculate_fitness)
             parent2 = max(population, key=calculate_fitness)
             offspring1, offspring2 = crossover(parent1, parent2)
             offspring_population.extend([offspring1, offspring2])
             offspring_population.extend([mutate(offspring1), mutate(offspring2)])
-            population.remove(min(population, key=calculate_fitness))
-            population.remove(min(population, key=calculate_fitness))
+            population.extend(offspring_population)
+            mutation_rate = mutation_rate * 0.9
+            crossover_rate = crossover_rate * 0.9
+
         elif selection_methods == 'progress_selection':
-            if generations < 20:
+            if generations < 40:
                 perent1 = random_selection(population, fitnesses)
                 parent2 = random_selection(population, fitnesses)
-            elif generations < 40 and generations >= 20:
+            elif generations < 60 and generations >= 40:
                 parent1 = tournament_selection(population, fitnesses)
                 parent2 = tournament_selection(population, fitnesses)
-            elif generations < 100 and generations >= 40:
+            elif generations < 100 and generations >= 60:
                 parent1 = ranking_selection(population, fitnesses)
                 parent2 = ranking_selection(population, fitnesses)
             else:
@@ -249,18 +268,17 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments, generat
             offspring1, offspring2 = crossover(parent1, parent2)
             population.extend([offspring1, offspring2])
             population.extend([mutate(offspring1), mutate(offspring2)])
-            population.remove(min(population, key=calculate_fitness))
-            population.remove(min(population, key=calculate_fitness))
+            mutation_rate = mutation_rate * 0.9
+            crossover_rate = crossover_rate * 1.1
+
 
 
         if selection_methods == 'elite':
             population = offspring_population
         population.extend(offspring_population)
-        population.remove(min(population, key=calculate_fitness))
-        population.remove(min(population, key=calculate_fitness))
 
-        mutation_rate = mutation_rate * 0.9
-        crossover_rate = crossover_rate * 1.1
+
+
         fitnesses = calculate_fitnesses_fo_all_population(population)
         max_profits.append(max(fitnesses))
         total_weight_list.append(sum(max(population, key=calculate_fitness)[i] * instruments[i][1] for i in range(len(instruments))))
@@ -304,16 +322,16 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments, generat
     plt.title(f'Convergence Graph {selection_methods}')
     plt.grid(True)
     plt.legend()
-    plt.pause(3)
+    plt.pause(5)
     return best_individual, best_fitness, total_weight
 
 # print(genetic_algorithm_maximize_the_profit('random',instruments, generations=1000, population_size=50, mutation_rate=0.75, crossover_rate=0.25))
-#
-# print(genetic_algorithm_maximize_the_profit('proportional',instruments, generations=1000, population_size=50, mutation_rate=0.9, crossover_rate=0.1))
-# print(genetic_algorithm_maximize_the_profit('tournament',instruments, generations=1000, population_size=50, mutation_rate=0.9, crossover_rate=0.1))
-# print(genetic_algorithm_maximize_the_profit('ranking',instruments, generations=1000, population_size=50, mutation_rate=0.9, crossover_rate=0.1))
-# print(genetic_algorithm_maximize_the_profit('elite',instruments, generations=1000, population_size=50, mutation_rate=0.9, crossover_rate=0.1))
-print(genetic_algorithm_maximize_the_profit('progress_selection',instruments, generations=1000, population_size=50, mutation_rate=0.9, crossover_rate=0.1))
+
+print(genetic_algorithm_maximize_the_profit('proportional',instruments, generations=1000, population_size=50))
+print(genetic_algorithm_maximize_the_profit('tournament',instruments, generations=1000, population_size=50))
+print(genetic_algorithm_maximize_the_profit('ranking',instruments, generations=1000, population_size=50))
+print(genetic_algorithm_maximize_the_profit('elite',instruments, generations=1000, population_size=50))
+print(genetic_algorithm_maximize_the_profit('progress_selection',instruments, generations=1000, population_size=50))
 
 
 
