@@ -275,6 +275,7 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments, generat
 
         if selection_methods == 'elite':
             population = offspring_population
+
         population.extend(offspring_population)
 
 
