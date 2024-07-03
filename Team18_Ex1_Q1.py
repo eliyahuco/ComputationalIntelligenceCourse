@@ -286,14 +286,14 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments,populati
 
 
         elif selection_methods == 'progress_selection':
-            if generations < 30:
+            if generations < 40:
                 parent1 = random_selection(population, fitnesses)
                 parent2 = random_selection(population, fitnesses)
-            elif generations < 50 and generations >= 40:
+            elif generations < 60 and generations >= 50:
                 parent1 = max(population, key=calculate_fitness)
                 parent2 = max(population, key=calculate_fitness)
 
-            elif generations < 120 and generations >= 60:
+            elif generations < 120 and generations >= 80:
                 parent1 = tournament_selection(population, fitnesses)
                 parent2 = tournament_selection(population, fitnesses)
             else:
@@ -368,7 +368,7 @@ def main():
 
     for method in methods:
         print(f"Running GA with {method} selection\n")
-        result = genetic_algorithm_maximize_the_profit(method, instruments, pop, generations=1000, population_size=50)
+        result = genetic_algorithm_maximize_the_profit(method, instruments, pop, generations=1000, population_size=50, mutation_rate=0.5, crossover_rate=0.5)
         print('\n')
         results.append(tuple([method, result[1], round(result[2], 2)]))
     print('#'*55)
@@ -378,6 +378,7 @@ def main():
     print('the worst solution is:', min(results, key=lambda x: x[1]))
     print('the heaviest weight is:', max(results, key=lambda x: x[2]))
     print('#' * 55)
+
 
 
 if __name__ == '__main__':
