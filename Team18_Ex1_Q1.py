@@ -97,7 +97,7 @@ def random_selection(population):
     len_population = len(population)
     pick = random.uniform(0,len_population )
     return population[int(pick)]
-def proportional_selection(population, fitnesses,pick=0.1):
+def proportional_selection(population, fitnesses,pick=0.5):
     '''
     This function selects an individual from the population using roulette wheel selection.
     The probability of selecting an individual is proportional to its fitness value.
@@ -157,7 +157,7 @@ def mutate(individual, mutation_rate=0.5):
     :return: the mutated individual
     '''
 
-    if random.random() < mutation_rate:
+    if random.random() > mutation_rate:
         index = random.randint(0, len(individual) - 1)
         individual[index] = 1 - individual[index]
         return individual
@@ -184,7 +184,6 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments,populati
 
     max_profits = []
     total_weight_list = []
-
     fitnesses = calculate_fitnesses_fo_all_population(population)
     offspring_population = [max(population, key=calculate_fitness),population[0],population[int(len(population)/2)],population[int(len(population)/3)],population[int(len(population)/4)]]
     for generation in range(generations):
@@ -225,7 +224,7 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments,populati
                 offspring2 = parent2
             population.extend([offspring1, offspring2])
             population.extend([mutate(offspring1), mutate(offspring2)])
-            mutation_rate = mutation_rate * 0.8
+            mutation_rate = mutation_rate * 0.9
             crossover_rate = crossover_rate * 1.1
             offspring_population.extend([offspring1, offspring2])
         elif selection_methods == 'ranking':
@@ -240,7 +239,7 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments,populati
             population.extend([offspring1, offspring2])
             population.extend([mutate(offspring1), mutate(offspring2)])
 
-            mutation_rate = mutation_rate * 0.75
+            mutation_rate = mutation_rate * 0.9
             crossover_rate = crossover_rate * 1.25
             offspring_population.extend([offspring1, offspring2])
         elif selection_methods == 'elite':
