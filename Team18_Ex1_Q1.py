@@ -167,6 +167,7 @@ def mutate(individual, mutation_rate=0.5):
 def moving_average(data, window_size):
     return [sum(data[i:i + window_size]) / window_size for i in range(len(data) - window_size + 1)]
 
+
 def genetic_algorithm_maximize_the_profit(selection_methods,instruments,population , generations=1000, population_size=50, mutation_rate=0.9, crossover_rate=0.1):
     '''
     This function implements a genetic algorithm to solve the knapsack problem.
