@@ -5,14 +5,18 @@
 Short Description:
 
 This script is the HW_1 in the course Computational Intelligence
-The script is an implementation of a genetic algorithm to solve the knapsack problem.
-The knapsack problem is a combinatorial optimization problem that seeks to maximize the profit of items in a knapsack without exceeding the weight limit.
+The script is an implementation of a genetic algorithm to solve the question 1 of the HW.
+The  problem is a combinatorial optimization problem that seeks to maximize the profit of items  without exceeding the weight limit.
 The script uses a genetic algorithm to find the best combination of items that maximizes the profit while keeping the total weight below the weight limit.
-The script uses three different selection methods: roulette wheel, tournament, and ranking and mutation.
+The script uses  different selection methods: random, proportional, tournament, ranking, and elite. and also a combination of them.
+the genetic algorithm will run on the same population and the same instruments data for all selection methods. and will compare the results.
+The script will initialize the population with random binary values.
 any generation we will choose only two parents to crossover and create two offspring.
+the population will be updated with offspring and a mutation of the offspring.
 The script plots a convergence graph showing the maximum profit obtained in each generation.
 The script prints the best solution found by the genetic algorithm, the expected profit, total weight, and the included instruments.
 the script will run with stop condition of 1000 generations or 50 generations do not improve the best solution.
+the scrip will run automatically and will print the results of the different selection methods and will show the convergence graph of each selection method.
 
 ---------------------------------------------------------------------------------
 """
