@@ -30,11 +30,10 @@ import numpy as np
 population_size = 50
 generations = 1000
 mutation_rate = 0.5
-crossover_rate = 0.9999
+crossover_rate = 0.5
 weight_limit = 100
 
 # Instruments data: [profit, weight]
-
 
 # [profit, weight]
 instruments = [[1212, 2.91],[1211, 8.19],[612, 5.55],[609, 15.6],
@@ -45,14 +44,9 @@ instruments = [[1212, 2.91],[1211, 8.19],[612, 5.55],[609, 15.6],
     [896, 17.2]
 ]
 
-
-W = 100
-
 # You can add your logic here to process the instruments and the total weight W
 print(f"Total instruments: {len(instruments)}")
-print(f"Total weight limit: {W}")
-
-
+print(f"Total weight limit: {weight_limit}")
 
 # Initialize population
 def initialize_population(size, n_items):
@@ -63,7 +57,6 @@ def initialize_population(size, n_items):
     :return: a list of lists with random binary values that represent the population
     '''
     return [[random.randint(0, 1) for _ in range(n_items)] for _ in range(size)]
-
 
 # Calculate fitness
 def calculate_fitness(individual):
@@ -79,8 +72,6 @@ def calculate_fitness(individual):
     if total_weight > weight_limit:
         return 0
     return total_profit
-
-
 
 # calculate fitness for all population
 def calculate_fitnesses_fo_all_population(population):
@@ -122,8 +113,6 @@ def proportional_selection(population, fitnesses,pick=0.1):
 
     return selected_individual
 
-
-
 # Tournament selection
 def tournament_selection(population, fitnesses, k=5):
     '''
@@ -139,7 +128,6 @@ def tournament_selection(population, fitnesses, k=5):
     selected.sort(key=lambda x: x[1], reverse=True)
     return selected[0][0]
 
-
 # Ranking selection
 def ranking_selection(population, fitnesses):
     sorted_population = [x for _, x in sorted(zip(fitnesses, population), reverse=True)]
@@ -152,16 +140,13 @@ def ranking_selection(population, fitnesses):
         if current > pick:
             return individual
 
-
 # Crossover
 def crossover(parent1, parent2, crossover_rate=0.5):
     if random.random() < crossover_rate:
         point = random.randint(1, len(parent1) - 1)
         return parent1[:point] + parent2[point:], parent2[:point] + parent1[point:]
 
-
     return parent1, parent2
-
 
 # Mutation using bit flip
 def mutate(individual, mutation_rate=0.5):
@@ -178,13 +163,9 @@ def mutate(individual, mutation_rate=0.5):
         return individual
     return individual
 
-
-
 # Moving average for smoothing
 def moving_average(data, window_size):
     return [sum(data[i:i + window_size]) / window_size for i in range(len(data) - window_size + 1)]
-
-
 
 def genetic_algorithm_maximize_the_profit(selection_methods,instruments,population , generations=1000, population_size=50, mutation_rate=0.9, crossover_rate=0.1):
     '''
@@ -201,9 +182,6 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments,populati
     :return: the best individual found by the genetic algorithm, the expected profit, and the total weight
     '''
 
-
-
-
     max_profits = []
     total_weight_list = []
 
@@ -215,8 +193,6 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments,populati
                 population.remove(min(population, key=calculate_fitness))
             fitnesses = calculate_fitnesses_fo_all_population(population)
 
-
-
         if selection_methods == 'random':
 
             parent1 = random_selection(population)
@@ -224,11 +200,8 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments,populati
             offspring1, offspring2 = crossover(parent1, parent2)
             population.extend([offspring1, offspring2])
             population.extend([mutate(offspring1), mutate(offspring2)])
-            # population.extend([mutate(parent1), mutate(parent2)])
             mutation_rate = mutation_rate * 0.75
             crossover_rate = crossover_rate * 1.1
-
-
 
         elif selection_methods == 'proportional':
 
@@ -241,7 +214,6 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments,populati
             mutation_rate = mutation_rate * 0.9
             crossover_rate = crossover_rate * 1.1
 
-
         elif selection_methods == 'tournament':
             parent1 = tournament_selection(population, fitnesses)
             parent2 = tournament_selection(population, fitnesses)
@@ -253,7 +225,7 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments,populati
                 offspring2 = parent2
             population.extend([offspring1, offspring2])
             population.extend([mutate(offspring1), mutate(offspring2)])
-            mutation_rate = mutation_rate * 0.9
+            mutation_rate = mutation_rate * 0.8
             crossover_rate = crossover_rate * 1.1
             offspring_population.extend([offspring1, offspring2])
         elif selection_methods == 'ranking':
@@ -287,22 +259,34 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments,populati
             population.extend([offspring1, offspring2])
             population.extend([mutate(offspring1), mutate(offspring2)])
             offspring_population.extend([offspring1, offspring2])
+            offspring_population.extend([mutate(offspring1), mutate(offspring2)])
 
 
         elif selection_methods == 'progress_selection':
             if generations < 40:
                 parent1 = random_selection(population, fitnesses)
                 parent2 = random_selection(population, fitnesses)
+                mutation_rate = mutation_rate * 0.9
+                crossover_rate = crossover_rate * 1.1
             elif generations < 60 and generations >= 50:
                 parent1 = max(population, key=calculate_fitness)
                 parent2 = max(population, key=calculate_fitness)
 
-            elif generations < 120 and generations >= 80:
+            elif generations < 100 and generations >= 80:
                 parent1 = tournament_selection(population, fitnesses)
                 parent2 = tournament_selection(population, fitnesses)
-            else:
+                mutation_rate = mutation_rate * 1.1
+                crossover_rate = crossover_rate * 0.9
+            elif generations < 160 and generations >= 120:
                 parent1 = ranking_selection(population, fitnesses)
                 parent2 = ranking_selection(population, fitnesses)
+                mutation_rate = mutation_rate * 1.2
+                crossover_rate = crossover_rate * 0.8
+            else:
+                parent1 = proportional_selection(population, fitnesses)
+                parent2 = proportional_selection(population, fitnesses)
+                mutation_rate = mutation_rate * 0.9
+                crossover_rate = crossover_rate * 1.1
 
             offspring1, offspring2 = crossover(parent1, parent2)
             population.extend([parent1, parent2])
