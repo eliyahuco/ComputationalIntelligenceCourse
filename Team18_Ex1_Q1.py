@@ -353,15 +353,15 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments,populati
     plt.clf()
     plt.plot(range(generations), max_profits, label='Max Profit')
     window_size = 10
-    smoothed_profits = moving_average(max_profits, window_size)
+    # smoothed_profits = moving_average(max_profits, window_size)
 
-    plt.plot(range(window_size - 1, generations), smoothed_profits, label='Smoothed Max Profit', color='red')
+    # plt.plot(range(window_size - 1, generations), smoothed_profits, label='Smoothed Max Profit', color='red')
     plt.xlabel('Generation')
     plt.ylabel('Max Profit')
     plt.title(f'Convergence Graph: {selection_methods}')
     plt.grid(True)
     plt.legend()
-    plt.pause(2.5)
+    plt.pause(2)
     return best_individual, best_fitness, total_weight
 
 def main():
@@ -382,8 +382,6 @@ def main():
     print('the worst solution is:', min(results, key=lambda x: x[1]))
     print('the heaviest weight is:', max(results, key=lambda x: x[2]))
     print('#' * 55)
-
-
 
 if __name__ == '__main__':
     main()
