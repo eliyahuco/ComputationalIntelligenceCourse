@@ -304,7 +304,7 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments,populati
         max_profits.append(max(fitnesses))
         total_weight_list.append(sum(max(population, key=calculate_fitness)[i] * instruments[i][1] for i in range(len(instruments))))
 
-        if mutation_rate < 0.1:
+        if mutation_rate < 0.01:
             mutation_rate = 0.9
         if crossover_rate > 0.9:
             crossover_rate = 0.1
