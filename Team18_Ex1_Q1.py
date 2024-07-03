@@ -334,8 +334,8 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments,populati
     print("Total weight =", total_weight)
     print("Included instruments are", [i for i in range(len(best_individual)) if best_individual[i] == 1])
     print('\n')
-    plt.clf()
-    plt.plot(range(generations), max_profits, label='Max Profit')
+    # plt.clf()
+    plt.plot(range(generations), max_profits, label=f'Max Profit: {selection_methods}')
     window_size = 10
     # smoothed_profits = moving_average(max_profits, window_size)
 
@@ -346,7 +346,8 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments,populati
     plt.grid(True)
     plt.legend()
     plt.pause(2)
-    return best_individual, best_fitness, total_weight
+
+    return selection_methods, best_fitness, total_weight
 
 def main():
     # print(genetic_algorithm_maximize_the_profit('random',instruments,population, generations=1000, population_size=50, mutation_rate=0.75, crossover_rate=0.25))
@@ -360,12 +361,13 @@ def main():
         print('\n')
         results.append(tuple([method, result[1], round(result[2], 2)]))
     print('#'*55)
-    print('the best solution is:', max(results, key=lambda x: x[1]))
-    print('the lowest weight is:', min(results, key=lambda x: x[2]))
-    print('#' * 55)
-    print('the worst solution is:', min(results, key=lambda x: x[1]))
-    print('the heaviest weight is:', max(results, key=lambda x: x[2]))
-    print('#' * 55)
+    print(f'the best solution is: {max(results, key=lambda x: x[1])[0]} selection method with profit: {max(results, key=lambda x: x[1])[1]}')
+    print(f'the heaviest weight is: {max(results, key=lambda x: x[2])[0] } selection method with weight: {max(results, key=lambda x: x[2])[2]}')
+    print('#'*55)
+    print(f'the worst solution is: {min(results, key=lambda x: x[1])[0]} selection method with profit: {min(results, key=lambda x: x[1])[1]}')
+    print(f'the lightest weight is: {min(results, key=lambda x: x[2])[0]} selection method with weight: {min(results, key=lambda x: x[2])[2]}')
+    print('#'*55)
+    plt.show()
 
 if __name__ == '__main__':
     main()
