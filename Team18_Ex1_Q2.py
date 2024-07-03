@@ -3,9 +3,9 @@
 # In this task, we planned a pressure vessel with parameters such that would minimize its cost while maintaining constraints
 # We did so using PSO and another nature inspired algorithm of our choice
 # The other algorithm we choose is Bat Algorithm for the following reasons:
-    # Offers good balance between exploration and exploitation
-    # Has fewer parameters to tune compared to other algorithms
-    # Known for good performance in continuous optimization problems
+# Offers good balance between exploration and exploitation
+# Has fewer parameters to tune compared to other algorithms
+# Known for good performance in continuous optimization problems
 # We also considered the best set of parameters for each algorithm using a grid search
 
 import numpy as np
@@ -18,7 +18,6 @@ def cost_func(x):
     Ts, Th, R, L = x
     return 0.6224 * Ts * R * L + 1.7787 * Th * R ** 2 + 3.1661 * Ts ** 2 * L + 19.84 * Ts ** 2 * R
 
-
 # Constraints definition & check
 def constraints(x):
     Ts, Th, R, L = x
@@ -27,7 +26,6 @@ def constraints(x):
     g3 = -np.pi * R ** 2 * L - (4 / 3) * np.pi * R ** 3 + 1_296_000  # Volume constraint
     g4 = L - 240  # Length constraint
     return np.all([g1 <= 0, g2 <= 0, g3 <= 0, g4 <= 0])
-
 
 # PSO algorithm
 def pso(num_particles, num_iterations, w, c1, c2):
@@ -81,7 +79,6 @@ def pso(num_particles, num_iterations, w, c1, c2):
 
     return global_best_position, global_best_score, cost_history
 
-
 # Bat Algorithm
 def bat_algorithm(num_bats, num_iterations, fmin, fmax, A, r):
     bats = []
@@ -133,7 +130,6 @@ def bat_algorithm(num_bats, num_iterations, fmin, fmax, A, r):
 
     return global_best_position, global_best_score, cost_history
 
-
 # Grid search function
 def grid_search(algorithm, param_grid, num_particles, num_iterations):
     best_params = None
@@ -184,7 +180,6 @@ def main():
     plt.yscale('log')
     plt.grid(True)
     plt.show()
-
 
 # Main execution
 if __name__ == '__main__':
