@@ -140,7 +140,7 @@ def grid_search(algorithm, param_grid, num_particles, num_iterations):
     best_score = float('inf')
     for params in product(*param_grid.values()):
         param_dict = dict(zip(param_grid.keys(), params))
-        if algorithm._name_ == 'pso':
+        if algorithm.__name__ == 'pso':
             _, score, _ = algorithm(num_particles, num_iterations, **param_dict)
         else:
             _, score, _ = algorithm(num_particles, num_iterations, **param_dict)
@@ -149,7 +149,44 @@ def grid_search(algorithm, param_grid, num_particles, num_iterations):
             best_params = param_dict
     return best_params, best_score
 
-def maim():
+
+
+num_particles = 50
+num_iterations = 1000
+
+# Grid search for PSO
+pso_param_grid = {'w': [0.5, 0.7, 0.9], 'c1': [1.0, 1.5, 2.0], 'c2': [1.0, 1.5, 2.0]}
+best_pso_params, best_pso_score = grid_search(pso, pso_param_grid, num_particles, num_iterations)
+print(f"Best PSO parameters: {best_pso_params}")
+print(f"Best PSO score: {best_pso_score}")
+
+# Run PSO with best parameters and print optimal values
+best_position, best_score, pso_history = pso(num_particles, num_iterations, **best_pso_params)
+print(f"Optimal PSO values: T_s={best_position[0]}, T_h={best_position[1]}, R={best_position[2]}, L={best_position[3]}")
+
+# Grid search for Bat Algorithm
+ba_param_grid = {'fmin': [0, 0.5], 'fmax': [1, 2], 'A': [0.5, 0.7, 0.9], 'r': [0.1, 0.3, 0.5]}
+best_ba_params, best_ba_score = grid_search(bat_algorithm, ba_param_grid, num_particles, num_iterations)
+print(f"Best Bat Algorithm parameters: {best_ba_params}")
+print(f"Best Bat Algorithm score: {best_ba_score}")
+
+# Run Bat Algorithm with best parameters and print optimal values
+best_position, best_score, ba_history = bat_algorithm(num_particles, num_iterations, **best_ba_params)
+print(f"Optimal Bat Algorithm values: T_s={best_position[0]}, T_h={best_position[1]}, R={best_position[2]}, L={best_position[3]}")
+
+plt.figure(figsize=(10, 6))
+plt.plot(pso_history, label='PSO')
+plt.plot(ba_history, label='Bat Algorithm')
+plt.xlabel('Iterations')
+plt.ylabel('Cost')
+plt.title('Cost vs Iterations')
+plt.legend()
+plt.yscale('log')
+plt.grid(True)
+plt.show()
+
+# Main execution
+if __name__ == "_main_":
     num_particles = 50
     num_iterations = 1000
 
@@ -183,9 +220,3 @@ def maim():
     plt.yscale('log')
     plt.grid(True)
     plt.show()
-
-
-
-# Main execution
-if __name__ == "_main_":
-    maim() # Call the main function
