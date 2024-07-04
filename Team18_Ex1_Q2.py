@@ -85,19 +85,15 @@ def pso(num_particles, num_iterations, w, c1, c2):
         for particle in particles:
             if constraints(particle['position']):
                 score = cost_func(particle['position'])
-
                 if score < particle['best_score']:
                     particle['best_score'] = score
                     particle['best_position'] = particle['position'].copy()
-
                 if score < global_best_score:
                     global_best_score = score
                     global_best_position = particle['position'].copy()
-
         if global_best_position is None:
             # If no valid global best position was found, skip updating velocities and particles
             continue
-
         for particle in particles:
             r1, r2 = np.random.rand(2)
             particle['velocity'] = (w * particle['velocity'] +
@@ -105,9 +101,7 @@ def pso(num_particles, num_iterations, w, c1, c2):
                                     c2 * r2 * (global_best_position - particle['position']))
             particle['position'] += particle['velocity']
             particle['position'] = np.clip(particle['position'], [0, 0, 10, 10], [99, 99, 200, 200])
-
         cost_history.append(global_best_score)
-
     return global_best_position, global_best_score, cost_history
 
 # Bat Algorithm
@@ -149,23 +143,17 @@ def bat_algorithm(num_bats, num_iterations, fmin, fmax, A, r):
                 new_position = bat['position'] + bat['velocity']
                 if np.random.rand() > r:
                     new_position = global_best_position + 0.001 * np.random.randn(4)
-
                 new_position = np.clip(new_position, [0, 0, 10, 10], [99, 99, 200, 200])
-
                 if constraints(new_position):
                     new_score = cost_func(new_position)
                     if new_score < bat['best_score'] and np.random.rand() < A:
                         bat['best_score'] = new_score
                         bat['best_position'] = new_position
-
                     if new_score < global_best_score:
                         global_best_score = new_score
                         global_best_position = new_position.copy()
-
                 bat['position'] = new_position
-
         cost_history.append(global_best_score)
-
     return global_best_position, global_best_score, cost_history
 
 # Grid search function
@@ -173,7 +161,6 @@ def grid_search(algorithm, param_grid, num_particles, num_iterations):
     best_params = None
     best_score = float('inf')
     for params in product(*param_grid.values()):
-
         param_dict = dict(zip(param_grid.keys(), params))
         if algorithm.__name__ == 'pso':
             _, score, _ = algorithm(num_particles, num_iterations, **param_dict)
