@@ -297,6 +297,8 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments,populati
             mutation_rate = mutation_rate * 0.9
             crossover_rate = crossover_rate * 1.1
 
+
+
         population.remove(min(population, key=calculate_fitness))
         population.remove(min(population, key=calculate_fitness))
 
@@ -314,10 +316,19 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments,populati
         #     print("Mutation rate:", mutation_rate, "Crossover rate:", crossover_rate)
         #     print("Best solution so far:", max(max_profits), 'best_weight' , total_weight_list[max_profits.index(max(max_profits ))])
 
-        if generation > 100 and max_profits[-1] == max_profits[-50]  and max_profits[-1] >= max(max_profits):
-            for i in range(generation, generations-1):
-                max_profits.append(max_profits[-1])
-            break
+        # if generation > 100 and max_profits[-1] == max_profits[-50]  and max_profits[-1] >= max(max_profits):
+        #     for i in range(generation, generations-1):
+        #         max_profits.append(max_profits[-1])
+        #     break
+        if generation >200:
+            cuont = 0
+            for profit in max_profits[-50:]:
+                if profit == max_profits[-1]:
+                    cuont += 1
+            if cuont == 50:
+                for i in range(generation, generations - 1):
+                    max_profits.append(max(max_profits))
+                break
 
         # plt.clf()
         # plt.xlabel('Generation')
@@ -325,7 +336,11 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments,populati
         # plt.title(f'Convergence Graph methods: {selection_methods}')
         # plt.plot(range(generation + 1), max_profits, label='Max Profit')
         # plt.pause(0.1)
-
+    # best_individual = []
+    # for individual in population:
+    #     if calculate_fitness(individual) == max(max_profits):
+    #         best_individual = individual
+    # print(best_individual, calculate_fitness(best_individual))
     best_individual = max(population, key=calculate_fitness)
     best_fitness = calculate_fitness(best_individual)
     total_weight = sum(best_individual[i] * instruments[i][1] for i in range(len(best_individual)))

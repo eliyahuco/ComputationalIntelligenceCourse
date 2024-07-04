@@ -1,13 +1,29 @@
+"""Authors: Eliyahu cohen, id 304911084
+            Daniel liberman, id 208206946
+
+---------------------------------------------------------------------------------
+Short Description:
 # Daniel Leiberman - 208206946, Eliyahu Cohen - 304911084
 
-# In this task, we planned a pressure vessel with parameters such that would minimize its cost while maintaining constraints
-# We did so using PSO and another nature inspired algorithm of our choice
-# The other algorithm we choose is Bat Algorithm for the following reasons:
-# Offers good balance between exploration and exploitation
-# Has fewer parameters to tune compared to other algorithms
-# Known for good performance in continuous optimization problems
-# We also considered the best set of parameters for each algorithm using a grid search
+In this task, we planned a pressure vessel with parameters such that would minimize its cost while maintaining constraints
+We did so using PSO and another nature inspired algorithm of our choice
+The other algorithm we choose is Bat Algorithm for the following reasons:
+Offers good balance between exploration and exploitation
+Has fewer parameters to tune compared to other algorithms
+Known for good performance in continuous optimization problems
+We also considered the best set of parameters for each algorithm using a grid search
 
+w (inertia weight): Balances exploration and exploitation. Values like 0.5, 0.7, and 0.9 are common choices because they help maintain diversity in the swarm and prevent premature convergence.
+c1 (cognitive component): Represents the particle's tendency to return to its best-known position. Values like 1.0, 1.5, and 2.0 are chosen based on empirical studies showing they effectively guide particles.
+c2 (social component): Represents the particle's tendency to move towards the global best position. Similar values to c1 are chosen for balance.
+For the BA algorithm:
+
+f_min and f_max (frequency range): Control the pulse emission rates. Choosing values like 0, 0.5, 1, and 2 provides a range of behaviors from no pulse emission to frequent pulses.
+A (loudness): Controls the exploration capacity. Values like 0.5, 0.7, and 0.9 represent different degrees of exploration.
+r (pulse rate): Represents the rate at which bats emit pulses. Values like 0.1, 0.3, and 0.5 provide a range from sparse to frequent pulses.
+
+---------------------------------------------------------------------------------
+"""
 import numpy as np
 import random
 import matplotlib.pyplot as plt
@@ -51,6 +67,13 @@ def pso(num_particles, num_iterations, w, c1, c2):
                 global_best_position = particle['position'].copy()
 
     for _ in range(num_iterations):
+        if _ > 150:
+            cuont = 0
+            for cost in cost_history[-50:]:
+                if cost == cost_history[-1]:
+                    cuont += 1
+            if cuont == 50:
+                break
         for particle in particles:
             if constraints(particle['position']):
                 score = cost_func(particle['position'])
@@ -102,6 +125,13 @@ def bat_algorithm(num_bats, num_iterations, fmin, fmax, A, r):
                 global_best_position = bat['position'].copy()
 
     for _ in range(num_iterations):
+        if _ > 150:
+            cuont = 0
+            for cost in cost_history[-50:]:
+                if cost == cost_history[-1]:
+                    cuont += 1
+            if cuont == 50:
+                break
         for bat in bats:
             beta = np.random.rand()
             bat['frequency'] = fmin + (fmax - fmin) * beta
@@ -154,7 +184,7 @@ def main():
     pso_param_grid = {'w': [0.5, 0.7, 0.9], 'c1': [1.0, 1.5, 2.0], 'c2': [1.0, 1.5, 2.0]}
     best_pso_params, best_pso_score = grid_search(pso, pso_param_grid, num_particles, num_iterations // accuracy_param)
     print(f"\nBest PSO parameters: {best_pso_params}")
-    print(f"Best PSO score: {best_pso_score}")
+    print(f"Best PSO cost: {best_pso_score}")
 
     # Run PSO with best parameters and print optimal values
     best_position, best_score, pso_history = pso(num_particles, num_iterations, **best_pso_params)
@@ -164,7 +194,7 @@ def main():
     ba_param_grid = {'fmin': [0, 0.5], 'fmax': [1, 2], 'A': [0.5, 0.7, 0.9], 'r': [0.1, 0.3, 0.5]}
     best_ba_params, best_ba_score = grid_search(bat_algorithm, ba_param_grid, num_particles, num_iterations // accuracy_param)
     print(f"\nBest Bat Algorithm parameters: {best_ba_params}")
-    print(f"Best Bat Algorithm score: {best_ba_score}")
+    print(f"Best Bat Algorithm cost: {best_ba_score}")
 
     # Run Bat Algorithm with best parameters and print optimal values
     best_position, best_score, ba_history = bat_algorithm(num_particles, num_iterations, **best_ba_params)
@@ -173,9 +203,9 @@ def main():
     plt.figure(figsize=(10, 6))
     plt.plot(pso_history, label='PSO')
     plt.plot(ba_history, label='Bat Algorithm')
-    plt.xlabel('Iterations')
-    plt.ylabel('Cost')
-    plt.title('Cost vs Iterations')
+    plt.xlabel('Iterations', fontsize=14, fontweight='bold')
+    plt.ylabel('Cost', fontsize=14, fontweight='bold')
+    plt.title('Cost vs Iterations', fontsize=16, fontweight='bold')
     plt.legend()
     plt.yscale('log')
     plt.grid(True)
