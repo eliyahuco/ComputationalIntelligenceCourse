@@ -138,8 +138,7 @@ def bat_algorithm(num_bats, num_iterations, fmin, fmax, A, r):
             beta = np.random.rand()
             bat['frequency'] = fmin + (fmax - fmin) * beta
             if global_best_position is not None:
-                bat['velocity'] = (bat['velocity'] +
-                                   (bat['position'] - global_best_position) * bat['frequency'])
+                bat['velocity'] = (bat['velocity'] +  (bat['position'] - global_best_position) * bat['frequency'])
                 new_position = bat['position'] + bat['velocity']
                 if np.random.rand() > r:
                     new_position = global_best_position + 0.001 * np.random.randn(4)
