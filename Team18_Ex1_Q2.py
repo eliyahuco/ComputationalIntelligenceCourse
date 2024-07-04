@@ -3,9 +3,9 @@
 both authors contributed equally to this assignment
 we were working together on the assignment and we both participated in the writing of the code and the writing of the report
 ---------------------------------------------------------------------------------
-Short Description:
-# Daniel Leiberman - 208206946, Eliyahu Cohen - 304911084
 
+This script is the question 2 of the first HW in the course computational intelligence
+The script is an implementation of a pressure vessel optimization problem using PSO and Bat Algorithm
 In this task, we planned a pressure vessel with parameters such that would minimize its cost while maintaining constraints
 We did so using PSO and another nature inspired algorithm of our choice
 The other algorithm we choose is Bat Algorithm for the following reasons:
