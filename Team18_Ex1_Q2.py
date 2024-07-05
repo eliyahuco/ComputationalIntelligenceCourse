@@ -216,6 +216,10 @@ def main():
     plt.yscale('log')
     plt.grid(True)
     plt.show()
+    print('\n')
+    print('#'*50)
+    print('the script finished running')
+    print('thank you for using our script')
 
 # Main execution
 if __name__ == '__main__':
