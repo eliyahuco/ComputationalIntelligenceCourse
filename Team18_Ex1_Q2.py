@@ -1,6 +1,8 @@
+# Authors: Eliyahu cohen, id 304911084
+#          Daniel liberman, id 208206946
 """Authors: Eliyahu cohen, id 304911084
             Daniel liberman, id 208206946
-both authors contributed equally to this assignment
+***both authors contributed equally to this assignment***
 we were working together on the assignment and we both participated in the writing of the code and the writing of the report
 ---------------------------------------------------------------------------------
 
