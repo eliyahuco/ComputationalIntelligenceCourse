@@ -249,7 +249,7 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments,populati
             #     population.remove(min(population, key=calculate_fitness))
 
             mutation_rate = mutation_rate*0.99
-            crossover_rate = crossover_rate*1.1
+            crossover_rate = crossover_rate*1.25
             parent1 = max(population, key=calculate_fitness)
             parent2 = max(offspring_population, key=calculate_fitness)
             offspring1, offspring2 = crossover(parent1, parent2)
@@ -258,8 +258,8 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments,populati
             if calculate_fitness(offspring2) < calculate_fitness(parent2):
                 offspring2 = parent2
 
-            # population.extend([offspring1, offspring2])
-            population.extend([mutate(offspring1), mutate(offspring2)])
+            population.extend([offspring1, offspring2])
+            # population.extend([mutate(offspring1), mutate(offspring2)])
             offspring_population.extend([offspring1, offspring2])
             offspring_population.extend([mutate(offspring1), mutate(offspring2)])
 
@@ -279,7 +279,7 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments,populati
                 parent2 = tournament_selection(population, fitnesses)
                 mutation_rate = mutation_rate * 1.1
                 crossover_rate = crossover_rate * 0.9
-            elif generations < 160 and generations >= 120:
+            elif generations < 150 and generations >= 120:
                 parent1 = ranking_selection(population, fitnesses)
                 parent2 = ranking_selection(population, fitnesses)
                 mutation_rate = mutation_rate * 1.2
@@ -316,7 +316,7 @@ def genetic_algorithm_maximize_the_profit(selection_methods,instruments,populati
         if crossover_rate > 0.99:
             crossover_rate = 0.01
 
-        if generation > 100:
+        if generation > 150:
             cuont = 0
             for profit in max_profits[-50:]:
                 if profit == max_profits[-1]:
