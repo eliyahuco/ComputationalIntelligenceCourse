@@ -33,7 +33,6 @@ K = data['feature_names'] # Strings of feature names
 
 X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
 
-
 def normal_equation(X, y):
     ''' Normal Equation method to solve for theta
     '''
