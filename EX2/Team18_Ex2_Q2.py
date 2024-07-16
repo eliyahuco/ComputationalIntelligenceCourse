@@ -42,7 +42,7 @@ Y = data['quality'] # [Quality]
 K = data['feature_names'] # Strings of feature names
 
 X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
-
+print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
 
 def Loss(y_test, y_pred):
     '''
@@ -107,22 +107,27 @@ def gradient_descent(X_train,y_train,X_test,y_test,learning_rate = 0.001,epochs=
     Wu = np.random.randn(X_train.shape[1]) # Initial weigth vector
     L_train = []
     L_test = []
+    bestweights = Wu
+    best_epoch = 0
+    best_loss = float('inf')
     for i in range(epochs):
         Y_p = predict(Wu, X_train)
         Wu = Wu - learning_rate * dLoss_dW(X_train, y_train ,Y_p) # Update weights
         L_train.append(Loss(y_train, Y_p))
         L_test.append(Loss(y_test, predict(Wu, X_test)))
-        if L_train[-1] < loss_threshold:
-            break
-    print("train loss",L_train[-1])
-    return Wu,L_test[-1],L_train[-1]
+        if L_train[-1] + L_test[-1] < best_loss:
+            best_loss = L_train[-1] + L_test[-1]
+            bestweights = Wu
+            best_epoch = i
+    print('The best epoch is:',best_epoch)
+    return bestweights,L_test[-1],L_train[-1]
 
 
 def get_batch(X, y, batch_size = 500):
     ix = np.random.choice(X.shape[0], batch_size)
     return X[ix, :], y[ix]
 
-def stochastic_gradient_descent(X_train,y_train,X_test,y_test,learning_rate = 0.01,epochs= 1000,batch_size = len(X_train)//2):
+def stochastic_gradient_descent(X_train,y_train,X_test,y_test,learning_rate = 0.001,epochs= 1000,batch_size = len(X_train)//2):
     '''
     This function calculates the weights using the stochastic gradient descent method
     :param X_train: the training data
@@ -166,20 +171,20 @@ def main():
     W_normal = normal_equation(X_train,y_train)
     pred_quality = predict(W_normal,X_test)
     NEL = Loss(y_test,pred_quality)
-    # print('#'*100)
-    # print('The loss on the test data using the normal equation is:',NEL)
-    # print('The weights using the normal equation are:',W_normal)
+    print('#'*100)
+    print('The loss on the test data using the normal equation is:',NEL)
+    print('The weights using the normal equation are:',W_normal)
 
     print('#'*100)
-    Wu,loss_test,loss_train = gradient_descent(X_train,y_train,X_test,y_test,learning_rate=0.00022, epochs=2500, loss_threshold=0.4)
+    Wu,loss_test,loss_train = gradient_descent(X_train,y_train,X_test,y_test,learning_rate=0.00001, epochs=5000, loss_threshold=0)
     print('The loss on the test data using the gradient descent method is:',loss_test)
-    # print('The loss on the training data using the gradient descent method is:',loss_train)
-    # print('The weights using the gradient descent method are:',Wu)
+    print('The loss on the training data using the gradient descent method is:',loss_train)
+    print('The weights using the gradient descent method are:',Wu)
     print('#'*100)
-    SWu,loss_test,loss_train = stochastic_gradient_descent(X_train,y_train,X_test,y_test,learning_rate=0.0001,epochs=500,batch_size=len(X[0]//10))
+    SWu,loss_test,loss_train = stochastic_gradient_descent(X_train,y_train,X_test,y_test,learning_rate=0.00001,epochs=5000,batch_size=len(X[0]//5))
     print('The loss on the test data using the stochastic gradient descent method is:',loss_test)
-    # print('The loss on the training data using the stochastic gradient descent method is:',loss_train)
-    # print('The weights using the stochastic gradient descent method are:',SWu)
+    print('The loss on the training data using the stochastic gradient descent method is:',loss_train)
+    print('The weights using the stochastic gradient descent method are:',SWu)
     #
     # study = optuna.create_study(direction='minimize')  # Adjust direction based on your objective
     # study.optimize(objective, n_trials=30)
