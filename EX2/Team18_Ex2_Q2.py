@@ -166,7 +166,7 @@ def main():
     print('\n')
     print('#' * 100)
     print('\ngradient descent:')
-    Wu, loss_test, loss_train,epoch_num = gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0001, epochs=1000, loss_threshold=NEL + 0.1)
+    Wu, loss_test, loss_train,epoch_num = gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0002, epochs=50000, loss_threshold=NEL + 0.1)
     print('The loss on the test data using the gradient descent method is:', loss_test)
     print('The loss on the training data using the gradient descent method is:', loss_train)
 
@@ -176,7 +176,7 @@ def main():
     print('\n')
     print('#' * 100)
     print('\nstochastic gradient descent:')
-    SWu, loss_test, loss_train, epochs_num = stochastic_gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0001, epochs=1000, batch_size=659, loss_threshold=NEL + 0.1)
+    SWu, loss_test, loss_train, epochs_num = stochastic_gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0002, epochs=50000, batch_size=1000, loss_threshold=NEL + 0.1)
     print('The loss on the test data using the stochastic gradient descent method is:', loss_test)
     print('The loss on the training data using the stochastic gradient descent method is:', loss_train)
 
@@ -203,9 +203,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
-
