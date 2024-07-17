@@ -53,8 +53,8 @@ def Loss(y, y_pred):
 # Define the gradient of the loss function
 def dLoss_dW(x, y, y_pred):
     M = len(y)
-    S = -x.T @ (y - y_pred)
-    return 2 * S / M
+    S = x.T @ (y - y_pred)
+    return -2 * S / M
 
 # Define the predict function
 def predict(W, X):
@@ -84,18 +84,19 @@ def gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0001, epo
             best_loss = L_train[-1] + L_test[-1]
             bestweights = Wu
             best_epoch = i
-        if L_test[-1] < loss_threshold:
+        if L_train[-1] < loss_threshold:
             best_epoch = i
             break
     print('The best epoch is:', best_epoch)
     # Plot the loss
     epochs_axis = range(len(L_train))
     plt.figure(figsize=(10, 6))
-    plt.plot(epochs_axis, L_train, label='Train loss')
-    plt.plot(epochs_axis, L_test, label='Test loss')
+    plt.plot(epochs_axis[100:], L_train[100:], label='Train loss')
+    plt.plot(epochs_axis[100:], L_test[100:], label='Test loss')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
-    plt.legend()
+    plt.title('Gradient Descent')
+    plt.legend(fontsize=12, loc='upper right')
     plt.show()
 
     return bestweights, L_test[-1], L_train[-1]
@@ -122,11 +123,12 @@ def stochastic_gradient_descent(X_train, y_train, X_test, y_test, learning_rate=
     # Plot the loss
     epochs_axis = range(len(L_train))
     plt.figure(figsize=(10, 6))
-    plt.plot(epochs_axis, L_train, label='Train loss')
-    plt.plot(epochs_axis, L_test, label='Test loss')
+    plt.plot(epochs_axis[100:], L_train[100:], label='Train loss')
+    plt.plot(epochs_axis[100:], L_test[100:], label='Test loss')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
-    plt.legend()
+    plt.title('Stochastic Gradient Descent')
+    plt.legend(fontsize=12, loc='upper right')
     plt.show()
     return Wu, L_test[-1], L_train[-1]
 
@@ -154,7 +156,7 @@ def main():
     print('\n')
     print('#' * 100)
     print('\ngradient descent:')
-    Wu, loss_test, loss_train = gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0001, epochs=300, loss_threshold=NEL + 0.1)
+    Wu, loss_test, loss_train = gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0001, epochs=1500, loss_threshold=NEL + 0.05)
     print('The loss on the test data using the gradient descent method is:', loss_test)
     print('The loss on the training data using the gradient descent method is:', loss_train)
 
@@ -165,7 +167,7 @@ def main():
     print('\nstochastic gradient descent:')
 
 
-    SWu, loss_test, loss_train = stochastic_gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0001, epochs=300, batch_size=len(X_train)//100)
+    SWu, loss_test, loss_train = stochastic_gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0001, epochs=1500, batch_size=len(X_train)//5)
     print('The loss on the test data using the stochastic gradient descent method is:', loss_test)
     print('The loss on the training data using the stochastic gradient descent method is:', loss_train)
 
