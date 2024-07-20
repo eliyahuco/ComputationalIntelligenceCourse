@@ -28,6 +28,8 @@ from sklearn.metrics import mean_squared_error, r2_score
 import pickle
 import matplotlib.pyplot as plt
 import optuna
+import time
+
 
 # Load the dataset
 data = pickle.load(open('wine_red_dataset.pkl', "rb"))
@@ -36,7 +38,7 @@ Y = data['quality']   # Target variable
 K = data['feature_names']  # Feature names
 
 # Split the dataset
-X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, random_state=42)
 print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
 
 
@@ -66,27 +68,40 @@ def normal_equation(X_train, y_train):
     return W
 
 # Define the gradient descent function
-def gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0001, epochs=1000, loss_threshold=0.001):
+def gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0001, epochs=1000, loss_threshold=0.001,pause=50):
     Wu = np.random.random(X_train.shape[1])  # Initial weight vector
     L_train = []
     L_test = []
-    bestweights = Wu
+    bestweights = None
     best_epoch = 0
-    best_loss = float('inf')
     epochs_num = 0
+    no_improvement = 0
+    best_loss = float('inf')
+    time0 = time.time()
+
     for i in range(epochs):
         Y_p = predict(Wu, X_train)
         Wu = Wu - learning_rate * dLoss_dW(X_train, y_train, Y_p)  # Update weights
         L_train.append(Loss(y_train, Y_p))
         L_test.append(Loss(y_test, predict(Wu, X_test)))
         epochs_num = i
-        if L_train[-1] + L_test[-1] < best_loss:
-            best_loss = L_train[-1] + L_test[-1]
+        current_loss = L_test[-1] + L_train[-1]
+        if current_loss < best_loss:
+            best_loss = current_loss
             bestweights = Wu
             best_epoch = i
-        if L_test[-1] < loss_threshold:
-            best_epoch = i
+            no_improvement = 0
+        else:
+            no_improvement += 1
+            if no_improvement >= pause:
+                print(f'Early stopping at epoch {i}')
+                best_epoch = i - pause
+                break
+        if L_test[-1] < loss_threshold and L_train[-1] < loss_threshold and i > 100:
+            epochs_num = i
             break
+    time_cur = time.time()
+    print(f'Training time: {time_cur-time0:.2f}[secs]')
     print('The best epoch is:', best_epoch)
     # Plot the loss
     epochs_axis = range(len(L_train))
@@ -107,28 +122,41 @@ def get_batch(X, y, batch_size=500):
     return X[ix, :], y[ix]
 
 # Define the stochastic gradient descent function
-def stochastic_gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0001, epochs=1000, batch_size=500, loss_threshold=0.001):
+def stochastic_gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0001, epochs=1000, batch_size=500, loss_threshold=0.001,pause=50):
     Wu = np.random.random(X_train.shape[1])  # Initial weight vector
     L_train = []
     L_test = []
-    epoch_num = 0
-    bestweights = Wu
+    bestweights = None
     best_epoch = 0
+    epochs_num = 0
+    no_improvement = 0
     best_loss = float('inf')
+    time0 = time.time()
     for i in range(epochs):
         X_batch, y_batch = get_batch(X_train, y_train, batch_size)
         Y_p = predict(Wu, X_batch)
         Wu = Wu - learning_rate * dLoss_dW(X_batch, y_batch, Y_p)  # Update weights
         L_train.append(Loss(y_batch, Y_p))
         L_test.append(Loss(y_test, predict(Wu, X_test)))
+        epochs_num = i
+        current_loss = L_test[-1] + L_train[-1]
 
-        if L_train[-1] + L_test[-1] < best_loss:
-            best_loss = L_train[-1] + L_test[-1]
+        if current_loss < best_loss and i > 300:
+            best_loss = current_loss
             bestweights = Wu
             best_epoch = i
-        if L_test[-1] < loss_threshold:
-            epoch_num = i
+            no_improvement = 0
+        else:
+            no_improvement += 1
+            if no_improvement >= pause and i > 300:
+                print(f'Early stopping at epoch {i}')
+                best_epoch = i - pause
+                break
+        if L_test[-1] < loss_threshold and L_train[-1] < loss_threshold and i > 300:
+            epochs_num = i
             break
+    time_cur = time.time()
+    print(f'Training time: {time_cur-time0:.2f}[secs]')
     print('The best epoch is:', best_epoch)
 
     # Plot the loss
@@ -141,7 +169,7 @@ def stochastic_gradient_descent(X_train, y_train, X_test, y_test, learning_rate=
     plt.title('Stochastic Gradient Descent')
     plt.legend(fontsize=12, loc='upper right')
     plt.show()
-    return bestweights, L_test[best_epoch], L_train[best_epoch], epoch_num
+    return bestweights, L_test[best_epoch], L_train[best_epoch], epochs_num
 
 # Define the objective function for Optuna
 # def objective(trial):
@@ -160,15 +188,16 @@ def main():
     print('#' * 100)
     print('\nNormal equation:')
     print('The loss on the test data using the normal equation is:', NEL)
-    print('The weights using the normal equation are:', W_normal)
+    print('\nThe weights using the normal equation are:', W_normal)
 
     # Gradient descent
     print('\n')
     print('#' * 100)
     print('\ngradient descent:')
-    Wu, loss_test, loss_train,epoch_num = gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0002, epochs=50000, loss_threshold=NEL + 0.1)
+    Wu, loss_test, loss_train,epoch_num = gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0001, epochs=1500, loss_threshold=NEL+0.1,pause=100)
     print('The loss on the test data using the gradient descent method is:', loss_test)
     print('The loss on the training data using the gradient descent method is:', loss_train)
+    print(f'The value of the combined loss is: {loss_test+loss_train}')
 
 
 
@@ -176,9 +205,10 @@ def main():
     print('\n')
     print('#' * 100)
     print('\nstochastic gradient descent:')
-    SWu, loss_test, loss_train, epochs_num = stochastic_gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0002, epochs=50000, batch_size=1000, loss_threshold=NEL + 0.1)
+    SWu, loss_test, loss_train, epochs_num = stochastic_gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0001, epochs=1500, batch_size=1000, loss_threshold=NEL+0.05 ,pause=100)
     print('The loss on the test data using the stochastic gradient descent method is:', loss_test)
     print('The loss on the training data using the stochastic gradient descent method is:', loss_train)
+    print(f'The value of the combined loss is: {loss_test+loss_train}')
 
 
 
