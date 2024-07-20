@@ -38,7 +38,7 @@ Y = data['quality']   # Target variable
 K = data['feature_names']  # Feature names
 
 # Split the dataset
-X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
 print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
 
 
@@ -69,7 +69,8 @@ def normal_equation(X_train, y_train):
 
 # Define the gradient descent function
 def gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0001, epochs=1000, loss_threshold=0.001,pause=50):
-    Wu = np.random.random(X_train.shape[1])  # Initial weight vector
+    Wu = np.ones(X_train.shape[1])  # Initial weights
+    Wu = Wu/1000
     L_train = []
     L_test = []
     bestweights = None
@@ -97,7 +98,7 @@ def gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0001, epo
                 print(f'Early stopping at epoch {i}')
                 best_epoch = i - pause
                 break
-        if L_test[-1] < loss_threshold and L_train[-1] < loss_threshold and i > 100:
+        if L_test[-1] < loss_threshold  and i > 100:
             epochs_num = i
             break
     time_cur = time.time()
@@ -108,7 +109,6 @@ def gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0001, epo
     plt.figure(figsize=(10, 6))
     plt.plot(epochs_axis[100:], L_train[100:], label='Train loss')
     plt.plot(epochs_axis[100:], L_test[100:], label='Test loss')
-    plt.xlabel('Epoch')
     plt.ylabel('Loss')
     plt.title('Gradient Descent')
     plt.legend(fontsize=12, loc='upper right')
@@ -123,7 +123,8 @@ def get_batch(X, y, batch_size=500):
 
 # Define the stochastic gradient descent function
 def stochastic_gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0001, epochs=1000, batch_size=500, loss_threshold=0.001,pause=50):
-    Wu = np.random.random(X_train.shape[1])  # Initial weight vector
+    Wu = np.ones(X_train.shape[1])  # Initial weight vector
+    Wu = Wu/1000
     L_train = []
     L_test = []
     bestweights = None
@@ -194,10 +195,9 @@ def main():
     print('\n')
     print('#' * 100)
     print('\ngradient descent:')
-    Wu, loss_test, loss_train,epoch_num = gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0001, epochs=1500, loss_threshold=NEL+0.1,pause=100)
+    Wu, loss_test, loss_train,epoch_num = gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.00025, epochs=2500, loss_threshold=NEL,pause=150)
     print('The loss on the test data using the gradient descent method is:', loss_test)
     print('The loss on the training data using the gradient descent method is:', loss_train)
-    print(f'The value of the combined loss is: {loss_test+loss_train}')
 
 
 
@@ -205,10 +205,10 @@ def main():
     print('\n')
     print('#' * 100)
     print('\nstochastic gradient descent:')
-    SWu, loss_test, loss_train, epochs_num = stochastic_gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0001, epochs=1500, batch_size=1000, loss_threshold=NEL+0.05 ,pause=100)
+    SWu, loss_test, loss_train, epochs_num = stochastic_gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.00005, epochs=30000, batch_size=1000, loss_threshold=NEL ,pause=150)
     print('The loss on the test data using the stochastic gradient descent method is:', loss_test)
     print('The loss on the training data using the stochastic gradient descent method is:', loss_train)
-    print(f'The value of the combined loss is: {loss_test+loss_train}')
+
 
 
 
@@ -233,3 +233,16 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+# Summary:
+# The normal equation method provides the best results, with the lowest loss on the test data.
+# The gradient descent method requires around 1000 epochs to converge to results close to the normal equation.
+# The stochastic gradient descent method requires around 1000 epochs to converge to results close to the normal equation.
+# The linear model may not be the best choice for predicting wine quality, as the loss values are relatively high.
+# the value of the loss for the normal equation is 0.around 0.39
+# we chose learning rate of 0.0001 and 1500 epochs for both gradient descent and stochastic gradient descent
+# because we saw that it give the balance between the loss and the time of the training
+# a bigger learning rate will make problems with the convergence of the model and a smaller learning rate will make the training time longer
+# we could take more epochs but around 1500
+
