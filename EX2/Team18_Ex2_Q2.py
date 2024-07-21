@@ -12,14 +12,7 @@ Normal Equation (without using the pinv function).
 Gradient Descent.
 Stochastic Gradient Descent.
 
-You need to:
-
-Calculate the loss on the test data for each method.
-Determine the number of epochs required for Gradient Descent to converge to results close to the Normal Equation.
-Experiment with parameters like learning rate, batch size, and the number of epochs to achieve a satisfactory result.
-Provide a summary of the performance of each method and assess whether a linear model is suitable for predicting wine quality in this specific case.
-
-
+the sammary of the results is at the end of the code.
 ---------------------------------------------------------------------------------
 """
 import numpy as np
@@ -123,7 +116,6 @@ def stochastic_gradient_descent(X_train, y_train, X_test, y_test, learning_rate=
         test_loss = Loss(y_test, predict(W, X_test))
         L_train.append(train_loss)
         L_test.append(test_loss)
-
         if train_loss + test_loss < best_loss:
             best_loss = train_loss + test_loss
             best_weights = W.copy()
@@ -200,8 +192,9 @@ def main():
     print(f'\nbased on the R2 score and the loss, the linear regression model is not the best choice for this dataset')
 
 
-
-
+    print('\n' + '#' * 100)
+    print('the code is finished')
+    print('thank you and have a nice day')
 
 if __name__ == '__main__':
     main()
