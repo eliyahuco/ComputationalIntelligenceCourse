@@ -12,6 +12,9 @@ Normal Equation (without using the pinv function).
 Gradient Descent.
 Stochastic Gradient Descent.
 
+the objective is to compare the results of the three methods and to check if the linear model is suitable for predicting wine quality in this specific case.
+also to find the best parameters for the gradient descent and stochastic gradient descent methods. (learning rate, batch size, epochs, etc.)
+
 the sammary of the results is at the end of the code.
 ---------------------------------------------------------------------------------
 """
@@ -21,7 +24,6 @@ from sklearn.metrics import mean_squared_error, r2_score
 import pickle
 import matplotlib.pyplot as plt
 import time
-
 
 # Load the dataset
 data = pickle.load(open('wine_red_dataset.pkl', "rb"))
