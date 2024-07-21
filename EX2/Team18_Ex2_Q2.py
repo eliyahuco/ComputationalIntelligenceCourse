@@ -27,7 +27,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
 import pickle
 import matplotlib.pyplot as plt
-import optuna
 import time
 
 
@@ -69,8 +68,8 @@ def normal_equation(X_train, y_train):
 
 # Define the gradient descent function
 def gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0001, epochs=1000, loss_threshold=0.001,pause=50):
-    Wu = np.ones(X_train.shape[1])  # Initial weights
-    Wu = Wu/1000
+    Wu = np.ones(X_train.shape[1])  # Initial weight vector
+    Wu = Wu/100000
     L_train = []
     L_test = []
     bestweights = None
@@ -79,7 +78,6 @@ def gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0001, epo
     no_improvement = 0
     best_loss = float('inf')
     time0 = time.time()
-
     for i in range(epochs):
         Y_p = predict(Wu, X_train)
         Wu = Wu - learning_rate * dLoss_dW(X_train, y_train, Y_p)  # Update weights
@@ -113,7 +111,6 @@ def gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0001, epo
     plt.title('Gradient Descent')
     plt.legend(fontsize=12, loc='upper right')
     plt.show()
-
     return bestweights, L_test[best_epoch], L_train[best_epoch], epochs_num
 
 # Define the get_batch function
@@ -124,7 +121,7 @@ def get_batch(X, y, batch_size=500):
 # Define the stochastic gradient descent function
 def stochastic_gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0001, epochs=1000, batch_size=500, loss_threshold=0.001,pause=50):
     Wu = np.ones(X_train.shape[1])  # Initial weight vector
-    Wu = Wu/1000
+    Wu = Wu / 100000
     L_train = []
     L_test = []
     bestweights = None
@@ -141,7 +138,6 @@ def stochastic_gradient_descent(X_train, y_train, X_test, y_test, learning_rate=
         L_test.append(Loss(y_test, predict(Wu, X_test)))
         epochs_num = i
         current_loss = L_test[-1] + L_train[-1]
-
         if current_loss < best_loss and i > 300:
             best_loss = current_loss
             bestweights = Wu
@@ -153,7 +149,7 @@ def stochastic_gradient_descent(X_train, y_train, X_test, y_test, learning_rate=
                 print(f'Early stopping at epoch {i}')
                 best_epoch = i - pause
                 break
-        if L_test[-1] < loss_threshold and L_train[-1] < loss_threshold and i > 300:
+        if L_test[-1] < loss_threshold  and i > 300:
             epochs_num = i
             break
     time_cur = time.time()
@@ -172,13 +168,6 @@ def stochastic_gradient_descent(X_train, y_train, X_test, y_test, learning_rate=
     plt.show()
     return bestweights, L_test[best_epoch], L_train[best_epoch], epochs_num
 
-# Define the objective function for Optuna
-# def objective(trial):
-#     learning_rate = trial.suggest_loguniform('learning_rate', 1e-5, 1e-3)
-#     epochs = trial.suggest_int('epochs', 300, 600)
-#     _, loss_test, _ = gradient_descent(X_train, y_train, X_test, y_test, learning_rate=learning_rate, epochs=epochs)
-#     return loss_test
-
 # Main function
 def main():
     # Normal equation
@@ -195,40 +184,17 @@ def main():
     print('\n')
     print('#' * 100)
     print('\ngradient descent:')
-    Wu, loss_test, loss_train,epoch_num = gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.00025, epochs=2500, loss_threshold=NEL,pause=150)
+    Wu, loss_test, loss_train,epoch_num = gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.00025, epochs=15000, loss_threshold=NEL*1.2,pause=100)
     print('The loss on the test data using the gradient descent method is:', loss_test)
     print('The loss on the training data using the gradient descent method is:', loss_train)
-
-
 
     # Stochastic gradient descent
     print('\n')
     print('#' * 100)
     print('\nstochastic gradient descent:')
-    SWu, loss_test, loss_train, epochs_num = stochastic_gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.00005, epochs=30000, batch_size=1000, loss_threshold=NEL ,pause=150)
+    SWu, loss_test, loss_train, epochs_num = stochastic_gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.00001, epochs=15000, batch_size=750, loss_threshold=NEL ,pause=300)
     print('The loss on the test data using the stochastic gradient descent method is:', loss_test)
     print('The loss on the training data using the stochastic gradient descent method is:', loss_train)
-
-
-
-
-
-
-    #
-    # study = optuna.create_study(direction='minimize')  # Adjust direction based on your objective
-    # study.optimize(objective, n_trials=30)
-    #
-    # best_params = study.best_params
-    # best_learning_rate = best_params['learning_rate']
-    # best_epochs = best_params['epochs']
-    # print(f"Best learning rate found: {best_learning_rate}")
-    # print(f"Best number of epochs found: {best_epochs}")
-    # print(f"Best loss found: {study.best_value}")
-    #
-    #
-    # # Now, use the best learning_rate to train your model
-    # _, best_loss_test, best_loss_train = gradient_descent(X_train, y_train, X_test, y_test,
-    #                                                       learning_rate=best_learning_rate, epochs=best_epochs)
 
 
 if __name__ == '__main__':
@@ -246,3 +212,31 @@ if __name__ == '__main__':
 # a bigger learning rate will make problems with the convergence of the model and a smaller learning rate will make the training time longer
 # we could take more epochs but around 1500
 
+
+
+
+
+import optuna
+# Define the objective function for Optuna
+# def objective(trial):
+#     learning_rate = trial.suggest_loguniform('learning_rate', 1e-5, 1e-3)
+#     epochs = trial.suggest_int('epochs', 300, 600)
+#     _, loss_test, _ = gradient_descent(X_train, y_train, X_test, y_test, learning_rate=learning_rate, epochs=epochs)
+#     return loss_test
+
+
+   #
+    # study = optuna.create_study(direction='minimize')  # Adjust direction based on your objective
+    # study.optimize(objective, n_trials=30)
+    #
+    # best_params = study.best_params
+    # best_learning_rate = best_params['learning_rate']
+    # best_epochs = best_params['epochs']
+    # print(f"Best learning rate found: {best_learning_rate}")
+    # print(f"Best number of epochs found: {best_epochs}")
+    # print(f"Best loss found: {study.best_value}")
+    #
+    #
+    # # Now, use the best learning_rate to train your model
+    # _, best_loss_test, best_loss_train = gradient_descent(X_train, y_train, X_test, y_test,
+    #                                                       learning_rate=best_learning_rate, epochs=best_epochs)
