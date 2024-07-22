@@ -15,7 +15,7 @@ Stochastic Gradient Descent.
 the objective is to compare the results of the three methods and to check if the linear model is suitable for predicting wine quality in this specific case.
 also to find the best parameters for the gradient descent and stochastic gradient descent methods. (learning rate, batch size, epochs, etc.)
 
-the sammary of the results is at the end of the code.
+the summary of the results is at the end of the code and also part of it will be printed.
 ---------------------------------------------------------------------------------
 """
 import numpy as np
@@ -56,7 +56,7 @@ def normal_equation(X_train, y_train):
 
 # Define the gradient descent function
 def gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0001, epochs=1000, loss_threshold=0.001, pause=50):
-    W = np.ones(X_train.shape[1]) / 10000  # Initial weight vector
+    W = np.ones(X_train.shape[1]) / 1000  # Initial weight vector
     L_train, L_test = [], []
     best_weights, best_loss = None, float('inf')
     best_epoch, no_improvement = 0, 0
@@ -104,7 +104,7 @@ def get_batch(X, y, batch_size=500):
 
 # Define the stochastic gradient descent function
 def stochastic_gradient_descent(X_train, y_train, X_test, y_test, learning_rate=0.0001, epochs=1000, batch_size=500, loss_threshold=0.001, pause=50):
-    W = np.ones(X_train.shape[1]) / 10000  # Initial weight vector
+    W = np.ones(X_train.shape[1]) / 1000  # Initial weight vector
     L_train, L_test = [], []
     best_weights, best_loss = None, float('inf')
     best_epoch, no_improvement = 0, 0
@@ -157,7 +157,9 @@ def main():
     print('#' * 100)
     print('\nNormal equation:')
     print('The loss on the test data using the normal equation is:', NEL)
-    print('\nThe weights using the normal equation are:', W_normal)
+    print('\nthe model of the normal equation is:')
+    for i in range(len(K)):
+        print(f'{K[i]}: {W_normal[i]}')
 
     # Gradient descent
     print('\n' + '#' * 100)
@@ -166,6 +168,9 @@ def main():
     print('\nThe loss on the test data using the gradient descent method is:', loss_test_gd)
     print('The loss on the training data using the gradient descent method is:', loss_train_gd)
     print('Best epoch for gradient descent:', epoch_gd)
+    print('\nthe model of the gradient descent is:')
+    for i in range(len(K)):
+        print(f'{K[i]}: {W_gd[i]}')
 
     # Stochastic gradient descent
     print('\n' + '#' * 100)
@@ -174,6 +179,9 @@ def main():
     print('\nThe loss on the test data using the stochastic gradient descent method is:', loss_test_sgd)
     print('The loss on the training data using the stochastic gradient descent method is:', loss_train_sgd)
     print('Best epoch for stochastic gradient descent:', epoch_sgd)
+    print('\nthe model of the stochastic gradient descent is:')
+    for i in range(len(K)):
+        print(f'{K[i]}: {W_sgd[i]}')
 
     print('\n' + '#' * 100)
     print('Summary:')
@@ -185,13 +193,13 @@ def main():
     print(f'the batch size for stochastic gradient descent was {batch_size}')
     print('\nGradient Descent took', epoch_gd, 'epochs to converge to results close to the Normal Equation')
     print('Stochastic Gradient Descent took', epoch_sgd, 'epochs to converge to results close to the Normal Equation')
-    print(f'we found the parameters above as the parameters that gave us the results closest to the normal equation')
-    print(f'checking if linear model is suitable for predicting wine quality in this specific case')
+    print(f'We found the parameters above as the parameters that gave us the results closest to the normal equation')
+    print(f'\nChecking if linear model is suitable for predicting wine quality in this specific case:')
 
-    print('\nR2 score for Normal Equation:', r2_score(y_test, pred_quality))
+    print('R2 score for Normal Equation:', r2_score(y_test, pred_quality))
     print('R2 score for Gradient Descent:', r2_score(y_test, predict(W_gd, X_test)))
     print('R2 score for Stochastic Gradient Descent:', r2_score(y_test, predict(W_sgd, X_test)))
-    print(f'\nbased on the R2 score and the loss, the linear regression model is not the best choice for this dataset')
+    print(f'\nBased on the R2 score and the loss, the linear regression model is not the best choice for this dataset')
 
 
     print('\n' + '#' * 100)
