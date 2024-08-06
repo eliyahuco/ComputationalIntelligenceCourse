@@ -110,8 +110,9 @@ def plot_learning_curve(classifiers, tuned_classifiers, X, y, X_test, y_test):
     plt.xlabel('Number of samples')
     plt.ylabel('Accuracy (%)')
     plt.title('Learning Curves for Classifiers')
-    plt.legend(fontsize=10, loc='upper left')
+    plt.legend(fontsize=10, loc='upper right')
     plt.show()
 
 # Plot the learning curves for both tuned and untuned classifiers
 plot_learning_curve(classifiers, tuned_classifiers, X_train_scaled, y_train, X_test_scaled, y_test)
+
