@@ -90,7 +90,7 @@ for name, clf in classifiers.items():
 # Function to plot the learning curves for both tuned and untuned classifiers
 def plot_learning_curve(classifiers, tuned_classifiers, X, y, X_test, y_test):
     train_sizes = np.linspace(0.1, 0.99, 5)
-    plt.figure()
+    plt.figure(figsize=(12, 8))
     for name, clf in classifiers.items():
         test_scores = []
         for size in train_sizes:
@@ -106,7 +106,7 @@ def plot_learning_curve(classifiers, tuned_classifiers, X, y, X_test, y_test):
             clf.fit(X_train_subset, y_train_subset)
             test_scores.append(clf.score(X_test, y_test))
         plt.plot(train_sizes * len(X), test_scores, '--', label=f'{name} Tuned')
-    plt.figure(1,10)
+
     plt.xlabel('Number of samples')
     plt.ylabel('Accuracy (%)')
     plt.title('Learning Curves for Classifiers')
