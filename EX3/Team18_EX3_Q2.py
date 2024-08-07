@@ -1,8 +1,10 @@
-# Authors: Eliyahu Cohen, id 304911084, Daniel Liberman, id 208206946
-# Both authors have contributed equally to the assignment.
-# We were working together on the assignment and we both participated in the writing of the code and the writing of the report.
+"""Authors: Eliyahu cohen, id 304911084
+            Daniel liberman, id 208206946
 
-# Short description:
+***both authors have contributed equally to the assignment.***
+we were working together on the assignment and we both participated in the writing of the code and the writing of the report
+---------------------------------------------------------------------------------
+Short Description:
 # Given a dataset of an EMG data for gestures, we trained and evaluated 3 different classifiers.
 # The classifiers include: Logistic Regression, Nearest Neighbors, and Naive Bayes.
 # For each classifier, the accuracy and other metrics were printed, and a graph of the accuracy vs. number of participants was plotted.
@@ -18,7 +20,7 @@
 # This indicates that the tuning may not align well with the dataset's characteristics or could be influenced by other model or data specifics.
 # Naive Bayes, doesn't require hyperparameter tuning like other algorithms because its assumptions are relatively simple and based on the distribution of data (assuming normal distribution for each feature)
 # Overall, Naive Bayes and KNN are recommended for this dataset due to their higher accuracy and ability to handle non-linear relationships.
-
+"""
 import pickle
 import numpy as np
 import matplotlib.pyplot as plt
