@@ -50,8 +50,7 @@ X_test_scaled = scaler.transform(X_test)
 names = ['Logistic Regression','Nearest Neighbors',
 'Linear SVM',
 'RBF SVM',
-'Gaussian Naive-Bayes'
-]
+'Gaussian Naive-Bayes']
 
 classifiers = [LogisticRegression(solver='liblinear', random_state=0,C=10),
 KNeighborsClassifier(n_neighbors=50),
@@ -95,82 +94,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
-
-
-
-# # Define hyperparameters for tuning
-# param_grid = {
-#     'Logistic Regression': {'C': [0.1, 1, 10, 100]},
-#     'Nearest Neighbors': {'n_neighbors': [3, 5, 7, 10]},
-#     'Linear SVM': {'C': [0.1, 1, 10]},
-#     'RBF SVM': {'C': [0.1, 1, 10], 'gamma': [0.01, 0.1, 1]}
-# }
-#
-# # Initialize classifiers
-# classifiers = {
-#     'Logistic Regression': LogisticRegression(),
-#     'Nearest Neighbors': KNeighborsClassifier(),
-#     'Linear SVM': SVC(kernel='linear'),
-#     'RBF SVM': SVC(kernel='rbf'),
-#     'Naive Bayes': GaussianNB()
-# }
-#
-# untuned_accuracies = {}
-#
-# # Train and evaluate classifiers before tuning
-# for name, clf in classifiers.items():
-#     clf.fit(X_train_scaled, y_train)
-#     y_pred = clf.predict(X_test_scaled)
-#     accuracy = accuracy_score(y_test, y_pred)
-#     untuned_accuracies[name] = accuracy
-#     print(f"{name} Untuned Accuracy: {accuracy * 100:.2f}%")
-#
-# tuned_classifiers = {}
-#
-# # Tune and evaluate classifiers
-# for name, clf in classifiers.items():
-#     if name in param_grid:
-#         grid_search = GridSearchCV(clf, param_grid[name], cv=5)
-#         grid_search.fit(X_train_scaled, y_train)
-#         best_clf = grid_search.best_estimator_
-#         best_clf.fit(X_train_scaled, y_train)
-#         y_pred = best_clf.predict(X_test_scaled)
-#         accuracy = accuracy_score(y_test, y_pred)
-#         tuned_classifiers[name] = best_clf
-#         print(f"{name} Tuned Accuracy: {accuracy * 100:.2f}%")
-#         print(f"Best parameters for {name}: {grid_search.best_params_}")
-#
-# # Function to plot the learning curves for both tuned and untuned classifiers
-# def plot_learning_curve(classifiers, tuned_classifiers, X, y, X_test, y_test):
-#     train_sizes = np.linspace(0.1, 0.99, 5)
-#     plt.figure(figsize=(12, 8))
-#     for name, clf in classifiers.items():
-#         test_scores = []
-#         for size in train_sizes:
-#             X_train_subset, _, y_train_subset, _ = train_test_split(X, y, train_size=size, random_state=42)
-#             clf.fit(X_train_subset, y_train_subset)
-#             test_scores.append(clf.score(X_test, y_test))
-#         plt.plot(train_sizes * len(X), test_scores, label=f'{name} Default')
-#
-#     for name, clf in tuned_classifiers.items():
-#         test_scores = []
-#         for size in train_sizes:
-#             X_train_subset, _, y_train_subset, _ = train_test_split(X, y, train_size=size, random_state=42)
-#             clf.fit(X_train_subset, y_train_subset)
-#             test_scores.append(clf.score(X_test, y_test))
-#         plt.plot(train_sizes * len(X), test_scores, '--', label=f'{name} Tuned')
-#
-#     plt.xlabel('Number of samples')
-#     plt.ylabel('Seucess rate (%)')
-#     plt.title('Learning Curves for Classifiers')
-#     plt.legend(fontsize=10, loc='upper right')
-#     plt.show()
-#
-# # Plot the learning curves for both tuned and untuned classifiers
-# plot_learning_curve(classifiers, tuned_classifiers, X_train_scaled, y_train, X_test_scaled, y_test)
-#

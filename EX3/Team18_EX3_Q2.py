@@ -50,8 +50,7 @@ names = ['Logistic Regression', 'Nearest Neighbors', 'Gaussian Naive-Bayes']
 classifiers = [
     LogisticRegression(solver='lbfgs', random_state=0, C=0.01, class_weight='balanced', tol=0.1),
     KNeighborsClassifier(n_neighbors=75, algorithm='kd_tree'),  # Reduced n_neighbors for faster performance
-    GaussianNB()
-]
+    GaussianNB()]
 
 # Function to evaluate a single classifier
 def evaluate_classifier(clf, X_train, y_train, X_test, y_test):
