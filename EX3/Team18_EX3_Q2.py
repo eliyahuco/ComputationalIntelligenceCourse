@@ -18,7 +18,6 @@ Short Description:
 # we used k = 75 for the KNN classifier, and we used C = 0.01 for the Logistic Regression classifier.
 # we also used 'lbfgs' as the solver for the Logistic Regression classifier. because it is a solver that is suitable for large datasets.
 # we used 'kd_tree' as the algorithm for the KNN classifier. because it is a suitable algorithm for large datasets.
-
 """
 
 import pickle
