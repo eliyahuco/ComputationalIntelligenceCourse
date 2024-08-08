@@ -46,7 +46,6 @@ scaler = MinMaxScaler().fit(X_train)
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
-
 names = ['Logistic Regression','Nearest Neighbors',
 'Linear SVM',
 'RBF SVM',
