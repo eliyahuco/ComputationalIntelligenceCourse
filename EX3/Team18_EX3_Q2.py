@@ -15,7 +15,7 @@ Short Description:
 # Naive Bayes shows a moderate accuracy for this dataset, but not so far from Nearest Neighbors.
 # The accuracy of the classifiers increases as the number of participants increases.
 # we try to change the parameters of the classifiers to improve the accuracy, and what we got was the best we could get.
-# we used k = 75 for the KNN classifier, and we used C = 0.1 for the Logistic Regression classifier.
+# we used k = 75 for the KNN classifier, and we used C = 0.01 for the Logistic Regression classifier.
 # we also used 'lbfgs' as the solver for the Logistic Regression classifier. because it is a solver that is suitable for large datasets.
 """
 
@@ -48,7 +48,7 @@ X_test_scaled = scaler.transform(X_test)
 # Define the classifiers
 names = ['Logistic Regression', 'Nearest Neighbors', 'Gaussian Naive-Bayes']
 classifiers = [
-    LogisticRegression(solver='lbfgs', random_state=0, C=0.1, class_weight='balanced',tol=0.1),
+    LogisticRegression(solver='lbfgs', random_state=0, C=0.01, class_weight='balanced',tol=0.1),
     KNeighborsClassifier(n_neighbors=75),
     GaussianNB()
 ]
